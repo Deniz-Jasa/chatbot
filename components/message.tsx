@@ -68,7 +68,7 @@ const PurePreviewMessage = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-4 w-full mt-[5px]">
             {message.experimental_attachments && (
               <div
                 data-testid={`message-attachments`}
@@ -263,7 +263,7 @@ export const ThinkingMessage = () => {
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-4 text-muted-foreground">
+          <div className="flex flex-col gap-4 text-muted-foreground mt-[5px]">
             Thinking...
           </div>
         </div>
