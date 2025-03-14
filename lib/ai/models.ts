@@ -13,11 +13,6 @@ export const chatModels: Array<ChatModel> = [
     "description": "High-speed chat model for quick tasks."
   },
   {
-    "id": "gemini-2-0-pro-exp",
-    "name": "Gemini 2.0 Pro",
-    "description": "Google's newest and most advanced multimodal model (Feb 2024)"
-  },
-  {
     "id": "claude-3-5",
     "name": "Claude 3.5 Haiku",
     "description": "Fast and efficient Claude model for everyday use"
