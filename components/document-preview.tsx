@@ -152,9 +152,19 @@ const PureHitboxLayer = ({
     updaterFn: UIArtifact | ((currentArtifact: UIArtifact) => UIArtifact),
   ) => void;
 }) => {
-  const handleClick = useCallback(
+  const handleFullscreenClick = useCallback(
     (event: MouseEvent<HTMLElement>) => {
-      const boundingBox = event.currentTarget.getBoundingClientRect();
+      event.stopPropagation(); // Prevent the click from bubbling up
+      
+      const boundingBox = hitboxRef.current?.getBoundingClientRect();
+      
+      // Ensure we have valid coordinates
+      const boundingBoxData = {
+        left: boundingBox?.left || 0,
+        top: boundingBox?.top || 0,
+        width: boundingBox?.width || 0,
+        height: boundingBox?.height || 0,
+      };
 
       setArtifact((artifact) =>
         artifact.status === 'streaming'
@@ -165,28 +175,54 @@ const PureHitboxLayer = ({
               documentId: result.id,
               kind: result.kind,
               isVisible: true,
-              boundingBox: {
-                left: boundingBox.x,
-                top: boundingBox.y,
-                width: boundingBox.width,
-                height: boundingBox.height,
-              },
+              boundingBox: boundingBoxData,
             },
       );
+    },
+    [hitboxRef, setArtifact, result],
+  );
+
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      // Only trigger for direct clicks on the main hitbox area
+      if (event.target === event.currentTarget) {
+        const boundingBox = event.currentTarget.getBoundingClientRect();
+
+        setArtifact((artifact) =>
+          artifact.status === 'streaming'
+            ? { ...artifact, isVisible: true }
+            : {
+                ...artifact,
+                title: result.title,
+                documentId: result.id,
+                kind: result.kind,
+                isVisible: true,
+                boundingBox: {
+                  left: boundingBox.x,
+                  top: boundingBox.y,
+                  width: boundingBox.width,
+                  height: boundingBox.height,
+                },
+              },
+        );
+      }
     },
     [setArtifact, result],
   );
 
   return (
     <div
-      className="size-full absolute top-0 left-0 rounded-xl z-10"
+      className="size-full absolute top-0 left-0 rounded-xl z-10 pointer-events-none"
       ref={hitboxRef}
       onClick={handleClick}
       role="presentation"
       aria-hidden="true"
     >
       <div className="w-full p-4 flex justify-end items-center">
-        <div className="absolute right-[9px] top-[13px] p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100">
+        <div 
+          className="absolute right-[9px] top-[13px] p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100 pointer-events-auto cursor-pointer" 
+          onClick={handleFullscreenClick}
+        >
           <FullscreenIcon />
         </div>
       </div>
@@ -238,7 +274,7 @@ const DocumentContent = ({ document }: { document: Document }) => {
   const { artifact } = useArtifact();
 
   const containerClassName = cn(
-    'h-[257px] overflow-y-scroll border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
+    'h-[257px] overflow-y-auto border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
     {
       'p-4 sm:px-14 sm:py-16': document.kind === 'text',
       'p-0': document.kind === 'code',
@@ -254,8 +290,18 @@ const DocumentContent = ({ document }: { document: Document }) => {
     suggestions: [],
   };
 
+  // Add click handler to stop propagation and allow scrolling
+  const handleContentClick = (e: React.MouseEvent) => {
+    // This prevents the hitbox layer from capturing the click event
+    e.stopPropagation();
+  };
+
   return (
-    <div className={containerClassName}>
+    <div 
+      className={containerClassName} 
+      onClick={handleContentClick}
+      onScroll={(e) => e.stopPropagation()}
+    >
       {document.kind === 'text' ? (
         <Editor {...commonProps} onSaveContent={() => {}} />
       ) : document.kind === 'code' ? (

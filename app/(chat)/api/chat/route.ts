@@ -34,13 +34,30 @@ export async function POST(request: Request) {
       id,
       messages,
       selectedChatModel,
+      selectedWritingStyle = 'Normal',
     }: {
       id: string;
       messages: Array<Message>;
       selectedChatModel: string;
+      selectedWritingStyle?: 'Normal' | 'Concise' | 'Explanatory' | 'Formal';
     } = await request.json();
 
-    console.log('Chat API request:', { id, selectedChatModel, messageCount: messages.length });
+    console.log('Chat API request:', { 
+      id, 
+      selectedChatModel, 
+      selectedWritingStyle,
+      messageCount: messages.length 
+    });
+
+    // Writing style prompts
+    const writingStylePrompts = {
+      Normal: '',
+      Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not create or offer to create documents. Respond directly in the chat with brief text only.</userStyle>',
+      Explanatory: '<userStyle>Provide detailed explanations and background context. Break down complex concepts into digestible parts. Use examples when helpful. Aim to educate the user thoroughly on the topic.</userStyle>',
+      Formal: '<userStyle>Use a formal, professional tone. Avoid colloquialisms and casual language. Use precise vocabulary and maintain proper grammar throughout. Structure your responses in a logical, organized manner.</userStyle>',
+    };
+
+    const stylePrompt = writingStylePrompts[selectedWritingStyle] || '';
 
     // Log messages with attachments as they may cause issues with Anthropic
     for (const msg of messages) {
@@ -83,29 +100,42 @@ export async function POST(request: Request) {
       execute: (dataStream) => {
         const result = streamText({
           model: myProvider.languageModel(selectedChatModel),
-          system: systemPrompt({ selectedChatModel }),
+          system: stylePrompt ? `${systemPrompt({ selectedChatModel })}\n${stylePrompt}` : systemPrompt({ selectedChatModel }),
           messages,
           maxSteps: 5,
           experimental_activeTools:
-            selectedChatModel === 'claude-3-7-reasoning'
+            selectedChatModel === 'claude-3-5-haiku'
               ? []
-              : [
-                  'getWeather',
-                  'createDocument',
-                  'updateDocument',
-                  'requestSuggestions',
-                ],
+              : selectedWritingStyle === 'Concise'
+                ? [
+                    'getWeather',
+                    'requestSuggestions',
+                  ]
+                : [
+                    'getWeather',
+                    'createDocument',
+                    'updateDocument',
+                    'requestSuggestions',
+                  ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
-          tools: {
-            getWeather,
-            createDocument: createDocument({ session, dataStream }),
-            updateDocument: updateDocument({ session, dataStream }),
-            requestSuggestions: requestSuggestions({
-              session,
-              dataStream,
-            }),
-          },
+          tools: selectedWritingStyle === 'Concise'
+            ? {
+                getWeather,
+                requestSuggestions: requestSuggestions({
+                  session,
+                  dataStream,
+                }),
+              }
+            : {
+                getWeather,
+                createDocument: createDocument({ session, dataStream }),
+                updateDocument: updateDocument({ session, dataStream }),
+                requestSuggestions: requestSuggestions({
+                  session,
+                  dataStream,
+                }),
+              },
           onFinish: async ({ response, reasoning }) => {
             if (session.user?.id) {
               try {

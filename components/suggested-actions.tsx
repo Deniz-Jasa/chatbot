@@ -17,8 +17,8 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
       title: 'Check the weather',
-      label: 'in Ottawa, Toronto, Paris, and New York',
-      action: 'What is the weather in Ottawa, Toronto, Paris, and New York?',
+      label: 'in Toronto',
+      action: 'What is the weather in Toronto?',
     },
     {
       title: 'Find a good restaurant',
