@@ -113,6 +113,12 @@ function PureMultimodalInput({
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);
 
+    // Add warning when using attachments with Anthropic
+    if (attachments.length > 0) {
+      const warningMessage = "Note: Image attachments may not work correctly with the current AI provider. If you encounter errors, try sending your message without attachments.";
+      console.warn(warningMessage);
+    }
+
     handleSubmit(undefined, {
       experimental_attachments: attachments,
     });
@@ -229,12 +235,11 @@ function PureMultimodalInput({
       <Textarea
         data-testid="multimodal-input"
         ref={textareaRef}
-        placeholder="Send a message..."
+        placeholder="Ask anything"
         value={input}
         onChange={handleInput}
         className={cx(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
-          className,
+          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:bg-[#272727]',
         )}
         rows={2}
         autoFocus

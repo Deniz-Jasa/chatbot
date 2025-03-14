@@ -25,19 +25,11 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   return (
     <Sidebar className="group-data-[side=left]:border-r-0">
       <SidebarHeader>
-        <SidebarMenu>
+        <SidebarMenu className="p-4">
           <div className="flex flex-row justify-between items-center">
-            <Link
-              href="/"
-              onClick={() => {
-                setOpenMobile(false);
-              }}
-              className="flex flex-row gap-3 items-center"
-            >
-              <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
-                Chatbot
+              <span className="text-lg font-semibold px-2">
+                Chat History
               </span>
-            </Link>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -58,10 +50,10 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           </div>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="pl-4 pr-4">
         <SidebarHistory user={user} />
       </SidebarContent>
-      <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
+      <SidebarFooter className="p-6">{user && <SidebarUserNav user={user} />}</SidebarFooter>
     </Sidebar>
   );
 }

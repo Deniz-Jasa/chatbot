@@ -16,25 +16,25 @@ interface SuggestedActionsProps {
 function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
-      title: 'What are the advantages',
-      label: 'of using Next.js?',
-      action: 'What are the advantages of using Next.js?',
+      title: 'Check the weather',
+      label: 'in Ottawa, Toronto, Paris, and New York',
+      action: 'What is the weather in Ottawa, Toronto, Paris, and New York?',
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: 'Find a good restaurant',
+      label: 'for Italian food near the Annex in Toronto',
+      action: 'Find a good Italian restaurant near the Annex in Toronto.',
     },
     {
-      title: 'Help me write an essay',
-      label: `about silicon valley`,
-      action: `Help me write an essay about silicon valley`,
+      title: 'Latest news on',
+      label: 'technology, sports, and world news',
+      action: 'What is the latest news on technlogy, sports, and the world?',
     },
     {
-      title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
-    },
+      title: 'Quick meal ideas',
+      label: 'with high protein for a busy weekday',
+      action: 'Give me some quick meal ideas with high protein low carbs for a busy weekday.',
+    }
   ];
 
   return (

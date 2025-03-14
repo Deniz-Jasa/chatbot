@@ -40,6 +40,15 @@ export async function POST(request: Request) {
       selectedChatModel: string;
     } = await request.json();
 
+    console.log('Chat API request:', { id, selectedChatModel, messageCount: messages.length });
+
+    // Log messages with attachments as they may cause issues with Anthropic
+    for (const msg of messages) {
+      if (msg.content && typeof msg.content !== 'string') {
+        console.log('Message with non-string content detected, may cause issues with Anthropic');
+      }
+    }
+
     const session = await auth();
 
     if (!session || !session.user || !session.user.id) {
@@ -78,7 +87,7 @@ export async function POST(request: Request) {
           messages,
           maxSteps: 5,
           experimental_activeTools:
-            selectedChatModel === 'chat-model-reasoning'
+            selectedChatModel === 'claude-3-7-reasoning'
               ? []
               : [
                   'getWeather',
@@ -133,12 +142,17 @@ export async function POST(request: Request) {
           sendReasoning: true,
         });
       },
-      onError: () => {
-        return 'Oops, an error occured!';
+      onError: (error) => {
+        console.error('Stream error occurred:', error);
+        return 'Oops, an error occurred! If you uploaded images, please try again without attachments as they might not be supported with the current AI provider.';
       },
     });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 400 });
+    console.error('Chat API error:', error);
+    return NextResponse.json({ 
+      error: 'Failed to process chat request', 
+      details: error instanceof Error ? error.message : String(error) 
+    }, { status: 400 });
   }
 }
 
