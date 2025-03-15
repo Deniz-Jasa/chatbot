@@ -209,6 +209,14 @@ export const codeArtifact = new Artifact<'code', Metadata>({
       },
     },
     {
+      icon: <CopyIcon size={18} />,
+      description: 'Copy',
+      onClick: ({ content }) => {
+        navigator.clipboard.writeText(content);
+        toast.success('Copied to clipboard!');
+      },
+    },
+    {
       icon: <UndoIcon size={18} />,
       description: 'View Previous version',
       onClick: ({ handleVersionChange }) => {
@@ -234,14 +242,6 @@ export const codeArtifact = new Artifact<'code', Metadata>({
         }
 
         return false;
-      },
-    },
-    {
-      icon: <CopyIcon size={18} />,
-      description: 'Copy code to clipboard',
-      onClick: ({ content }) => {
-        navigator.clipboard.writeText(content);
-        toast.success('Copied to clipboard!');
       },
     },
   ],

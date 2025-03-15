@@ -9,7 +9,7 @@ import {
   useRef,
 } from 'react';
 import { ArtifactKind, UIArtifact } from './artifact';
-import { FileIcon, FullscreenIcon, ImageIcon, LoaderIcon } from './icons';
+import { FileIcon, FullscreenIcon, ImageIcon, LoaderIcon, CopyIcon } from './icons';
 import { cn, fetcher } from '@/lib/utils';
 import { Document } from '@/lib/db/schema';
 import { InlineDocumentSkeleton } from './document-skeleton';
@@ -21,6 +21,7 @@ import { useArtifact } from '@/hooks/use-artifact';
 import equal from 'fast-deep-equal';
 import { SpreadsheetEditor } from './sheet-editor';
 import { ImageEditor } from './image-editor';
+import { toast } from 'sonner';
 
 interface DocumentPreviewProps {
   isReadonly: boolean;
@@ -125,8 +126,13 @@ const LoadingSkeleton = ({ artifactKind }: { artifactKind: ArtifactKind }) => (
         </div>
         <div className="animate-pulse rounded-lg h-4 bg-muted-foreground/20 w-24" />
       </div>
-      <div>
-        <FullscreenIcon />
+      <div className="flex gap-2">
+        <div>
+          <CopyIcon />
+        </div>
+        <div>
+          <FullscreenIcon />
+        </div>
       </div>
     </div>
     {artifactKind === 'image' ? (
@@ -152,6 +158,12 @@ const PureHitboxLayer = ({
     updaterFn: UIArtifact | ((currentArtifact: UIArtifact) => UIArtifact),
   ) => void;
 }) => {
+  const { data: documents } = useSWR<Array<Document>>(
+    result ? `/api/document?id=${result.id}` : null,
+    fetcher
+  );
+  const document = documents?.[0];
+
   const handleFullscreenClick = useCallback(
     (event: MouseEvent<HTMLElement>) => {
       event.stopPropagation(); // Prevent the click from bubbling up
@@ -180,6 +192,17 @@ const PureHitboxLayer = ({
       );
     },
     [hitboxRef, setArtifact, result],
+  );
+
+  const handleCopyClick = useCallback(
+    (event: MouseEvent<HTMLElement>) => {
+      event.stopPropagation();
+      if (document?.content) {
+        navigator.clipboard.writeText(document.content);
+        toast.success('Copied to clipboard!');
+      }
+    },
+    [document],
   );
 
   const handleClick = useCallback(
@@ -219,11 +242,19 @@ const PureHitboxLayer = ({
       aria-hidden="true"
     >
       <div className="w-full p-4 flex justify-end items-center">
-        <div 
-          className="absolute right-[9px] top-[13px] p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100 pointer-events-auto cursor-pointer" 
-          onClick={handleFullscreenClick}
-        >
-          <FullscreenIcon />
+        <div className="absolute right-[9px] top-[13px] flex gap-2">
+          <div
+            className="p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100 pointer-events-auto cursor-pointer"
+            onClick={handleCopyClick}
+          >
+            <CopyIcon />
+          </div>
+          <div 
+            className="p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100 pointer-events-auto cursor-pointer" 
+            onClick={handleFullscreenClick}
+          >
+            <FullscreenIcon />
+          </div>
         </div>
       </div>
     </div>

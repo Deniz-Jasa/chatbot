@@ -23,13 +23,14 @@ import { useLocalStorage, useWindowSize, useOnClickOutside } from 'usehooks-ts';
 
 import { sanitizeUIMessages } from '@/lib/utils';
 
-import { ArrowUpIcon, PaperclipIcon, StopIcon, ChevronDownIcon } from './icons';
+import { ArrowUpIcon, PaperclipIcon, StopIcon, ChevronDownIcon, MicIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 import { UseChatHelpers, UseChatOptions } from '@ai-sdk/react';
+import { VoiceModal } from './voice-modal';
 
 // Client-only component wrapper
 const ClientOnly = ({ children }: { children: React.ReactNode }) => {
@@ -341,8 +342,67 @@ function PureMultimodalInput({
     );
   }, [setAttachments]);
 
+  // Add state for voice modal
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+  
+  // Check browser support for voice recording
+  const checkVoiceSupport = useCallback(async () => {
+    // Check for MediaRecorder support
+    if (typeof MediaRecorder === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      toast.error('Your browser does not support voice recording');
+      return false;
+    }
+    
+    // Check for microphone permission
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Clean up the test stream
+      stream.getTracks().forEach(track => track.stop());
+      return true;
+    } catch (error) {
+      if (error instanceof DOMException) {
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+          toast.error('Microphone access denied. Please allow microphone access in your browser settings.');
+        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+          toast.error('No microphone found. Please check your microphone connection.');
+        } else {
+          toast.error(`Microphone error: ${error.name}`);
+        }
+      } else {
+        toast.error('Could not access microphone');
+      }
+      console.error('Error checking microphone access:', error);
+      return false;
+    }
+  }, []);
+  
+  // Handle opening the voice modal
+  const handleOpenVoiceModal = useCallback(async (event: React.MouseEvent) => {
+    event.preventDefault();
+    
+    const isSupported = await checkVoiceSupport();
+    if (isSupported) {
+      setIsVoiceModalOpen(true);
+    }
+  }, [checkVoiceSupport]);
+  
+  // Add handler for voice input
+  const handleVoiceInput = (text: string) => {
+    setInput(text);
+    
+    // Auto-resize textarea after setting input
+    if (textareaRef.current) {
+      adjustHeight();
+    }
+  };
+
   return (
-    <div className="relative w-full flex flex-col gap-4">
+    <div
+      className={cx(
+        className,
+        'sticky bottom-0 bg-background px-3 pb-3 @container/input w-full flex flex-col gap-2',
+      )}
+    >
       {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
@@ -393,7 +453,7 @@ function PureMultimodalInput({
           value={input}
           onChange={handleInput}
           className={cx(
-            'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:bg-[#272727]',
+            'min-h-[24px] p-4 max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-sm bg-muted pb-10 dark:bg-[#272727]',
             isDraggingOver && 'border-2 border-dashed border-primary bg-primary/10'
           )}
           rows={2}
@@ -417,6 +477,20 @@ function PureMultimodalInput({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         />
+
+        {/* Voice input button positioned at the right when input is empty */}
+        {!input && status === 'ready' && (
+          <div className="absolute right-0 top-0 bottom-0 flex items-center pr-4">
+            <Button
+              data-testid="voice-button"
+              className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700"
+              onClick={handleOpenVoiceModal}
+              variant="ghost"
+            >
+              <MicIcon size={16} />
+            </Button>
+          </div>
+        )}
 
         <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start gap-2">
           <AttachmentsButton fileInputRef={fileInputRef} status={status} />
@@ -448,14 +522,14 @@ function PureMultimodalInput({
               </Button>
               
               {styleDropdownOpen && (
-                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#1A1A1A] rounded-md z-10 py-1 border border-[#303030] dark:border-[#303030] w-30">
+                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#1A1A1A] rounded-md z-10 py-1 border dark:border-[#303030] dark:border-[#303030] w-30">
                   {Object.keys(writingStylePrompts).map((style) => (
                     <button
                       key={style}
                       type="button"
                       className={cx(
-                        "w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-zinc-700",
-                        selectedStyle === style && "bg-gray-100 dark:bg-zinc-700",
+                        "w-full text-left px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-[#272727]",
+                        selectedStyle === style && "bg-gray-100 dark:bg-[#272727]",
                         selectedStyle === style && style !== 'Normal' && [
                           styleColorMap[style as WritingStyle].text,
                           styleColorMap[style as WritingStyle].darkText
@@ -494,6 +568,13 @@ function PureMultimodalInput({
           )}
         </div>
       </div>
+      
+      {/* Add Voice Modal */}
+      <VoiceModal 
+        isOpen={isVoiceModalOpen} 
+        onClose={() => setIsVoiceModalOpen(false)} 
+        onVoiceInput={handleVoiceInput}
+      />
     </div>
   );
 }

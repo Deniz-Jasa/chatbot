@@ -26,7 +26,7 @@ export const myProvider = customProvider({
     'cohere-command-r': cohere('command-r'),
     
     // OpenRouter models
-    'deepseek-r1': openrouter('deepseek/deepseek-r1-distill-llama-70b:free'),
+    'deepseek-r1': openrouter('qwen/qwq-32b:free'),
     
     // Service models
     'title-model': google('gemini-1.5-flash-latest'),
