@@ -345,46 +345,14 @@ function PureMultimodalInput({
   // Add state for voice modal
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   
-  // Check browser support for voice recording
-  const checkVoiceSupport = useCallback(async () => {
-    // Check for MediaRecorder support
-    if (typeof MediaRecorder === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      toast.error('Your browser does not support voice recording');
-      return false;
-    }
-    
-    // Check for microphone permission
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // Clean up the test stream
-      stream.getTracks().forEach(track => track.stop());
-      return true;
-    } catch (error) {
-      if (error instanceof DOMException) {
-        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-          toast.error('Microphone access denied. Please allow microphone access in your browser settings.');
-        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-          toast.error('No microphone found. Please check your microphone connection.');
-        } else {
-          toast.error(`Microphone error: ${error.name}`);
-        }
-      } else {
-        toast.error('Could not access microphone');
-      }
-      console.error('Error checking microphone access:', error);
-      return false;
-    }
-  }, []);
-  
   // Handle opening the voice modal
-  const handleOpenVoiceModal = useCallback(async (event: React.MouseEvent) => {
+  const handleOpenVoiceModal = useCallback((event: React.MouseEvent) => {
     event.preventDefault();
+    console.log('Voice button clicked, opening modal...');
     
-    const isSupported = await checkVoiceSupport();
-    if (isSupported) {
-      setIsVoiceModalOpen(true);
-    }
-  }, [checkVoiceSupport]);
+    // Open the modal immediately - permissions will be checked inside the modal
+    setIsVoiceModalOpen(true);
+  }, []);
   
   // Add handler for voice input
   const handleVoiceInput = (text: string) => {
@@ -478,20 +446,6 @@ function PureMultimodalInput({
           onDrop={handleDrop}
         />
 
-        {/* Voice input button positioned at the right when input is empty */}
-        {!input && status === 'ready' && (
-          <div className="absolute right-0 top-0 bottom-0 flex items-center pr-4">
-            <Button
-              data-testid="voice-button"
-              className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700"
-              onClick={handleOpenVoiceModal}
-              variant="ghost"
-            >
-              <MicIcon size={16} />
-            </Button>
-          </div>
-        )}
-
         <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start gap-2">
           <AttachmentsButton fileInputRef={fileInputRef} status={status} />
         </div>
@@ -570,11 +524,11 @@ function PureMultimodalInput({
       </div>
       
       {/* Add Voice Modal */}
-      <VoiceModal 
+      {/* <VoiceModal 
         isOpen={isVoiceModalOpen} 
         onClose={() => setIsVoiceModalOpen(false)} 
         onVoiceInput={handleVoiceInput}
-      />
+      /> */}
     </div>
   );
 }
