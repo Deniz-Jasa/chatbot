@@ -368,7 +368,7 @@ function PureMultimodalInput({
     <div
       className={cx(
         className,
-        'sticky bottom-0 bg-background px-3 pb-3 @container/input w-full flex flex-col gap-2',
+        'sticky bottom-0 bg-background px-3 @container/input w-full flex flex-col gap-2',
       )}
     >
       {messages.length === 0 &&
@@ -412,7 +412,7 @@ function PureMultimodalInput({
           ))}
         </div>
       )}
-
+``
       <div className="relative">
         <Textarea
           data-testid="multimodal-input"
