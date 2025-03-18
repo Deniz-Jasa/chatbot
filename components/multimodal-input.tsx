@@ -412,7 +412,6 @@ function PureMultimodalInput({
           ))}
         </div>
       )}
-``
       <div className="relative">
         <Textarea
           data-testid="multimodal-input"
