@@ -60,7 +60,7 @@ export function CodeBlock({
     return (
       <div className="not-prose flex flex-col bg-[#191919] rounded-xl border border-[#303030] overflow-hidden">
         {/* Header */}
-        <div className="flex justify-between items-center bg-[#303030] text-zinc-400 px-4 py-2 text-sm">
+        <div className="flex justify-between items-center bg-[#303030] text-zinc-400 px-4 py-2 text-[9pt]">
           <span>{language}</span>
           <button
             onClick={handleCopy}
