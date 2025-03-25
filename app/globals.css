@@ -172,13 +172,22 @@
     @apply bg-background dark:bg-[#191919] outline-none selection:bg-zinc-900 !important;
 }
 
-.ͼo.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground,
-.ͼo.cm-selectionBackground,
+.ͼo.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground {
+    @apply bg-zinc-200 dark:bg-zinc-800 !important;
+}
+.ͼo.cm-selectionBackground {
+    @apply bg-zinc-200 dark:bg-zinc-800 !important;
+}
 .ͼo.cm-content::selection {
     @apply bg-zinc-200 dark:bg-zinc-900 !important;
 }
 
-.cm-activeLine,
+
+
+.cm-activeLine {
+    @apply bg-zinc-200 dark:bg-transparent !important;
+}
+
 .cm-activeLineGutter {
     @apply bg-transparent !important;
 }

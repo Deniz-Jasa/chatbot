@@ -6,29 +6,23 @@ import {
 import { anthropic } from '@ai-sdk/anthropic';
 import { google } from '@ai-sdk/google';
 import { cohere } from '@ai-sdk/cohere';
-import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { createTogetherAI } from '@ai-sdk/togetherai';
 
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY || '',
+const togetherai = createTogetherAI({
+  apiKey: process.env.TOGETHER_AI_API_KEY ?? '',
 });
 
 export const myProvider = customProvider({
   languageModels: {
-    // Anthropic Claude models
     'claude-3-5': anthropic('claude-3-5-haiku-latest'),
     'claude-3-7': anthropic('claude-3-7-sonnet-latest'),
-    
-    // Google Gemini models
     'gemini-2-0-pro-exp': google('gemini-2.0-pro-pro-exp-02-05'),
     'gemini-1-5-flash': google('gemini-1.5-flash-latest'),
-    
-    // Cohere models
     'cohere-command-r': cohere('command-r'),
     
-    // OpenRouter models
-    'deepseek-r1': openrouter.languageModel('deepseek/deepseek-chat'),
-    
-    // Service models
+    // Deep Seek R1 via Together AI
+    'deepseek-r1': togetherai('deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free') as any,
+
     'title-model': google('gemini-1.5-flash-latest'),
     'artifact-model': google('gemini-1.5-flash-latest'),
   },

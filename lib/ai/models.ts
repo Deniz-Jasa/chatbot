@@ -10,7 +10,7 @@ export const chatModels: Array<ChatModel> = [
   {
     "id": "gemini-1-5-flash",
     "name": "Gemini 1.5 Flash",
-    "description": "High-speed chat model for quick tasks."
+    "description": "High-speed chat model for quick tasks"
   },
   {
     "id": "claude-3-5",
@@ -20,16 +20,16 @@ export const chatModels: Array<ChatModel> = [
   {
     "id": "claude-3-7",
     "name": "Claude 3.7 Sonnet",
-    "description": "Latest Claude model with enhanced reasoning and coding abilities"
+    "description": "Latest Claude model with enhanced reasoning and coding"
+  },
+  {
+    "id": "deepseek-r1",
+    "name": "Deepseek R1 Distill",
+    "description": "Built for deep reasoning; fully distilled for unrestricted access"
   },
   {
     "id": "cohere-command-r",
     "name": "Cohere Command-R",
-    "description": "Optimized for advanced RAG and comprehensive knowledge tasks."
-  },
-  {
-    "id": "deepseek-r1",
-    "name": "Deepseek R1",
-    "description": "Advanced language model via OpenRouter for complex tasks"
+    "description": "Optimized for advanced RAG and comprehensive knowledge tasks"
   }
 ];

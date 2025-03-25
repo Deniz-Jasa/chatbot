@@ -1,12 +1,10 @@
-'use client';
-
 import type { ChatRequestOptions, Message } from 'ai';
 import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
-import { memo, useState } from 'react';
+import { memo, useState, useMemo, useEffect } from 'react';
 import type { Vote } from '@/lib/db/schema';
 import { DocumentToolCall, DocumentToolResult } from './document';
-import { PencilEditIcon, SparklesIcon } from './icons';
+import { PencilEditIcon, SparklesIcon, ChevronDownIcon } from './icons';
 import { Markdown } from './markdown';
 import { MessageActions } from './message-actions';
 import { PreviewAttachment } from './preview-attachment';
@@ -18,6 +16,47 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
+
+// Function to extract thinking content from Deepseek model responses
+const extractThinkingContent = (content: string) => {
+  if (!content) return { mainContent: '', thinkingContent: '', thinkingComplete: false, thinkingStartTime: null };
+  
+  // Check if content starts with <think> tag
+  if (content.trimStart().startsWith('<think>')) {
+    // For streaming responses - if we have an opening <think> tag but no closing tag yet
+    const hasClosingTag = content.includes('</think>');
+    
+    if (hasClosingTag) {
+      // Complete thinking tag with closing tag - extract and clean content
+      const thinkRegex = /<think>([\s\S]*?)<\/think>/;
+      const match = content.match(thinkRegex);
+      
+      if (match && match[1]) {
+        // Replace the entire <think>...</think> tag with empty string to remove it from main content
+        return {
+          thinkingContent: match[1].trim(),
+          mainContent: content.replace(/<think>[\s\S]*?<\/think>/, '').trim(),
+          thinkingComplete: true,
+          thinkingStartTime: null // We don't know when thinking started since we're getting a completed thinking tag
+        };
+      }
+    } else {
+      // Streaming thinking content without closing tag yet - remove the opening tag
+      // and treat everything after it as thinking content
+      const thinkingContent = content.replace('<think>', '').trim();
+      // Return empty main content since we're still in thinking mode
+      return {
+        thinkingContent,
+        mainContent: '',
+        thinkingComplete: false,
+        thinkingStartTime: Date.now() // Track when thinking started
+      };
+    }
+  }
+  
+  // No thinking content found or thinking is complete
+  return { mainContent: content, thinkingContent: '', thinkingComplete: false, thinkingStartTime: null };
+};
 
 const PurePreviewMessage = ({
   chatId,
@@ -41,6 +80,33 @@ const PurePreviewMessage = ({
   isReadonly: boolean;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
+  const [thinkingStartTime, setThinkingStartTime] = useState<number | null>(null);
+  const [thinkingDuration, setThinkingDuration] = useState<number | null>(null);
+  
+  // Parse content for Deepseek thinking tags
+  const { mainContent, thinkingContent, thinkingComplete, thinkingStartTime: extractedStartTime } = useMemo(() => {
+    if (typeof message.content !== 'string') return { 
+      mainContent: '', 
+      thinkingContent: '', 
+      thinkingComplete: false, 
+      thinkingStartTime: null 
+    };
+    return extractThinkingContent(message.content);
+  }, [message.content]);
+  
+  // Track thinking start time
+  useEffect(() => {
+    if (extractedStartTime && !thinkingStartTime) {
+      setThinkingStartTime(extractedStartTime);
+    }
+  }, [extractedStartTime, thinkingStartTime]);
+  
+  // Calculate thinking duration when thinking is complete
+  useEffect(() => {
+    if (thinkingComplete && thinkingStartTime && !thinkingDuration) {
+      setThinkingDuration(Date.now() - thinkingStartTime);
+    }
+  }, [thinkingComplete, thinkingStartTime, thinkingDuration]);
 
   return (
     <AnimatePresence>
@@ -68,7 +134,7 @@ const PurePreviewMessage = ({
             </div>
           )}
 
-          <div className="flex flex-col gap-4 w-full mt-[5px]">
+          <div className="flex flex-col gap-4 w-full mt-[7px]">
             {message.experimental_attachments && (
               <div
                 data-testid={`message-attachments`}
@@ -90,7 +156,7 @@ const PurePreviewMessage = ({
               />
             )}
 
-            {(message.content || message.reasoning) && mode === 'view' && (
+            {((mainContent || thinkingContent) || message.reasoning) && mode === 'view' && (
               <div
                 data-testid="message-content"
                 className="gap-2 items-start"
@@ -119,7 +185,16 @@ const PurePreviewMessage = ({
                       message.role === 'user',
                   })}
                 >
-                  <Markdown>{message.content as string}</Markdown>
+                  {/* Display thinking content dropdown at the top if present */}
+                  {thinkingContent && message.role === 'assistant' && (
+                    <MessageThinking 
+                      thinkingContent={thinkingContent} 
+                      thinkingDuration={thinkingDuration}
+                    />
+                  )}
+                  
+                  {/* Display main content below thinking section */}
+                  {mainContent && <Markdown>{mainContent}</Markdown>}
                 </div>
               </div>
             )}
@@ -263,11 +338,76 @@ export const ThinkingMessage = () => {
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-4 text-muted-foreground mt-[5px]">
+          <div className="flex flex-col gap-4 text-muted-foreground mt-[5px] text-[11pt]">
             Thinking...
           </div>
         </div>
       </div>
     </motion.div>
+  );
+};
+
+export const MessageThinking = ({ 
+  thinkingContent, 
+  thinkingDuration 
+}: { 
+  thinkingContent: string;
+  thinkingDuration: number | null;
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const variants = {
+    collapsed: { height: 0, opacity: 0, overflow: 'hidden' },
+    expanded: { height: 'auto', opacity: 1, overflow: 'visible' },
+  };
+  
+  // Format the thinking duration in milliseconds
+  const formattedDuration = thinkingDuration 
+    ? `${(thinkingDuration / 1000).toFixed(2)}s` 
+    : null;
+
+  return (
+    <div className="mt-[-8px]">
+      <div className="flex items-center gap-1.5">
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-9 gap-1.5 text-xs pr-4"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <div className={cn('transition-transform', {
+            'rotate-180': isExpanded,
+          })}>
+            <ChevronDownIcon size={14} />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span>{isExpanded ? "Hide" : "Show"} thinking</span>
+            {formattedDuration && (
+              <span className="text-xs text-muted-foreground">
+                ({formattedDuration})
+              </span>
+            )}
+          </div>
+        </Button>
+      </div>
+
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            data-testid="message-thinking"
+            key="content"
+            initial="collapsed"
+            animate="expanded"
+            exit="collapsed"
+            variants={variants}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+            className="pl-4 text-zinc-600 dark:text-[#9C9C9C] border-l flex flex-col gap-4 mt-2"
+          >
+            <Markdown>{thinkingContent}</Markdown>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };

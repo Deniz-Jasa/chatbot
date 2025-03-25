@@ -48,6 +48,7 @@ export function ModelSelector({
           <ChevronDownIcon />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="start" className="min-w-[300px]">
         {chatModels.map((chatModel) => {
           const { id } = chatModel;
@@ -77,7 +78,6 @@ export function ModelSelector({
                     {chatModel.description}
                   </div>
                 </div>
-
                 <div className="text-foreground dark:text-foreground opacity-0 group-data-[active=true]/item:opacity-100">
                   <CheckCircleFillIcon />
                 </div>

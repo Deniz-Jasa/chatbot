@@ -25,6 +25,7 @@
     "@ai-sdk/google": "^1.1.22",
     "@ai-sdk/openai": "1.2.0",
     "@ai-sdk/react": "^1.1.20",
+    "@ai-sdk/togetherai": "^0.2.1",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-python": "^6.1.6",
     "@codemirror/state": "^6.5.0",
