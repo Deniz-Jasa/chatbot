@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     // Writing style prompts
     const writingStylePrompts = {
       Normal: '',
-      Concise: '<userStyle>For emails (reply or proof read): Write naturally and simple, avoid corporate jargon. Keep it under 10 words. Focus on core message. Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not create or offer to create documents. Respond directly in the chat with brief text only. Follow your email instructions!</userStyle>',
+      Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not create or offer to create documents artifacts (you can create code artifacts). Respond directly in the chat with brief text only. Email instructions: Do not create a text artifact if writing emails. Write naturally and simple, avoid corporate jargon. Focus on core message. Follow your email instructions!</userStyle>',
       Explanatory: '<userStyle>Provide detailed explanations and background context. Break down complex concepts into digestible parts. Use examples when helpful. Aim to educate the user thoroughly on the topic.</userStyle>',
       Formal: '<userStyle>Use a formal, professional tone. Avoid colloquialisms and casual language. Use precise vocabulary and maintain proper grammar throughout. Structure your responses in a logical, organized manner.</userStyle>',
     };
