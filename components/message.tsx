@@ -93,7 +93,7 @@ const PurePreviewMessage = ({
             {(message.content || message.reasoning) && mode === 'view' && (
               <div
                 data-testid="message-content"
-                className="flex flex-row gap-2 items-start"
+                className="gap-2 items-start"
               >
                 {message.role === 'user' && !isReadonly && (
                   <Tooltip>

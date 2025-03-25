@@ -58,7 +58,7 @@ type WritingStyle = 'Normal' | 'Concise' | 'Explanatory' | 'Formal';
 
 const writingStylePrompts: Record<WritingStyle, string> = {
   Normal: '',
-  Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not make artifacts.</userStyle>',
+  Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not create or offer to create documents unless the user specifically requests it. Respond directly in the chat with brief text only.</userStyle>',
   Explanatory: '<userStyle>Provide detailed explanations and background context. Break down complex concepts into digestible parts. Use examples when helpful. Aim to educate the user thoroughly on the topic.</userStyle>',
   Formal: '<userStyle>Use a formal, professional tone. Avoid colloquialisms and casual language. Use precise vocabulary and maintain proper grammar throughout. Structure your responses in a logical, organized manner.</userStyle>',
 };
@@ -499,7 +499,7 @@ function PureMultimodalInput({
               </Button>
               
               {styleDropdownOpen && (
-                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#1A1A1A] rounded-md z-10 py-1 border dark:border-[#303030] dark:border-[#303030] w-30">
+                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#191919] rounded-md z-10 py-1 border dark:border-[#303030] dark:border-[#303030] w-30">
                   {Object.keys(writingStylePrompts).map((style) => (
                     <button
                       key={style}
