@@ -46,7 +46,7 @@ const PurePreviewMessage = ({
     <AnimatePresence>
       <motion.div
         data-testid={`message-${message.role}`}
-        className="w-full mx-auto max-w-3xl px-4 group/message mb-12"
+        className="w-full mx-auto max-w-3xl px-7 group/message mb-12"
         initial={{ y: 5, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         data-role={message.role}
@@ -125,7 +125,7 @@ const PurePreviewMessage = ({
             )}
 
             {message.content && mode === 'edit' && (
-              <div className="flex flex-row gap-2 items-start">
+              <div className="gap-2 items-start">
                 <div className="size-8" />
 
                 <MessageEditor

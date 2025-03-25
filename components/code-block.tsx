@@ -58,9 +58,9 @@ export function CodeBlock({
     const language = className?.replace('language-', '') || 'text';
 
     return (
-      <div className="not-prose flex flex-col bg-[#191919] rounded-xl border border-[#303030] overflow-hidden">
+      <div className="not-prose flex flex-col bg-[#191919] rounded-xl border border-[#303030] overflow-hidden mt-4 mb-4">
         {/* Header */}
-        <div className="flex justify-between items-center bg-[#303030] text-zinc-400 px-4 py-2 text-sm">
+        <div className="flex justify-between items-center bg-[#303030] text-zinc-400 px-4 py-2 text-xs">
           <span>{language}</span>
           <button
             onClick={handleCopy}
