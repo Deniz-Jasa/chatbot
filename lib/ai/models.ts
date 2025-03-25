@@ -26,5 +26,10 @@ export const chatModels: Array<ChatModel> = [
     "id": "cohere-command-r",
     "name": "Cohere Command-R",
     "description": "Optimized for advanced RAG and comprehensive knowledge tasks."
+  },
+  {
+    "id": "deepseek-r1",
+    "name": "Deepseek R1",
+    "description": "Advanced language model via OpenRouter for complex tasks"
   }
 ];

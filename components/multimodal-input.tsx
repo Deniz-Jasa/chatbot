@@ -58,7 +58,7 @@ type WritingStyle = 'Normal' | 'Concise' | 'Explanatory' | 'Formal';
 
 const writingStylePrompts: Record<WritingStyle, string> = {
   Normal: '',
-  Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration.</userStyle>',
+  Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not make artifacts.</userStyle>',
   Explanatory: '<userStyle>Provide detailed explanations and background context. Break down complex concepts into digestible parts. Use examples when helpful. Aim to educate the user thoroughly on the topic.</userStyle>',
   Formal: '<userStyle>Use a formal, professional tone. Avoid colloquialisms and casual language. Use precise vocabulary and maintain proper grammar throughout. Structure your responses in a logical, organized manner.</userStyle>',
 };
@@ -115,8 +115,11 @@ function PureMultimodalInput({
 
   const adjustHeight = () => {
     if (textareaRef.current) {
+      const minHeight = 98; // Set minimum height in pixels
+      textareaRef.current.style.height = `${minHeight}px`; // Set initial height
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.max(scrollHeight, minHeight)}px`;
     }
   };
 
@@ -149,8 +152,18 @@ function PureMultimodalInput({
   }, [input, setLocalStorageInput]);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(event.target.value);
-    adjustHeight();
+    const value = event.target.value;
+    setInput(value);
+    
+    // Immediate height adjustment
+    requestAnimationFrame(() => {
+      if (textareaRef.current) {
+        const minHeight = 98;
+        textareaRef.current.style.height = 'auto';
+        const scrollHeight = textareaRef.current.scrollHeight;
+        textareaRef.current.style.height = `${Math.max(scrollHeight, minHeight)}px`;
+      }
+    });
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -420,8 +433,19 @@ function PureMultimodalInput({
           value={input}
           onChange={handleInput}
           className={cx(
-            'min-h-[24px] p-4 max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-sm bg-muted pb-10 dark:bg-[#272727]',
-            isDraggingOver && 'border-2 border-dashed border-primary bg-primary/10'
+            'min-h-[98px] w-full p-4 pb-12 max-h-[calc(75dvh)] mt-3 overflow-hidden resize-none rounded-t-2xl !rounded-b-none !text-sm',
+            selectedStyle === 'Normal' 
+              ? 'bg-muted'
+              : [
+                  'bg-gradient-to-l via-muted',  // Changed to-l for left direction
+                  selectedStyle === 'Concise' && 'from-blue-50/50',
+                  selectedStyle === 'Explanatory' && 'from-amber-50/50',
+                  selectedStyle === 'Formal' && 'from-purple-50/50',
+                  selectedStyle === 'Concise' && 'dark:from-blue-900/5',
+                  selectedStyle === 'Explanatory' && 'dark:from-amber-900/5',
+                  selectedStyle === 'Formal' && 'dark:from-purple-900/5',
+              ],
+              isDraggingOver && 'border-t-2 border-l-2 border-r-2 border-dashed border-primary border-b-0 bg-primary/10'
           )}
           rows={2}
           autoFocus
@@ -449,7 +473,7 @@ function PureMultimodalInput({
           <AttachmentsButton fileInputRef={fileInputRef} status={status} />
         </div>
 
-        <div className="absolute bottom-0 right-0 p-2 w-fit flex flex-row justify-end gap-2">
+        <div className="absolute bottom-0 right-0 p-2 px-4 w-fit flex flex-row justify-end gap-2">
           <ClientOnly>
             <div className="relative" ref={styleDropdownRef}>
               <Button

@@ -278,7 +278,7 @@ function PureArtifact({
 
           {!isMobile && (
             <motion.div
-              className="relative w-[600px] bg-muted dark:bg-background h-dvh shrink-0"
+              className="relative w-[50vw] bg-muted dark:bg-background h-dvh shrink-0"
               initial={{ opacity: 0, x: 10, scale: 1 }}
               animate={{
                 opacity: 1,
@@ -301,7 +301,7 @@ function PureArtifact({
               <AnimatePresence>
                 {!isCurrentVersion && (
                   <motion.div
-                    className="left-0 absolute h-dvh w-[600px] top-0 bg-zinc-900/50 z-50"
+                    className="left-0 absolute h-dvh w-[50vw] top-0 bg-zinc-900/50 z-50"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -321,7 +321,7 @@ function PureArtifact({
                   artifactStatus={artifact.status}
                 />
 
-                <form className="flex flex-row gap-2 relative items-end w-full px-4 pb-4">
+                <form className="flex flex-row gap-4 relative items-end md:w-[80%] w-full">
                   <MultimodalInput
                     chatId={chatId}
                     input={input}
@@ -381,12 +381,12 @@ function PureArtifact({
                   }
                 : {
                     opacity: 1,
-                    x: 600,
+                    x: '50vw',
                     y: 0,
                     height: windowHeight,
                     width: windowWidth
-                      ? windowWidth - 600
-                      : 'calc(100dvw-600px)',
+                      ? windowWidth - (windowWidth * 0.5)
+                      : '50vw',
                     borderRadius: 0,
                     transition: {
                       delay: 0,
