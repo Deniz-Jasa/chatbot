@@ -3,33 +3,19 @@
 ![chat](https://github.com/user-attachments/assets/2f70ea10-78ba-45ae-b6e0-08f5c09f4099)
 
 This is a fork of [Vercel AI Chatbot](https://github.com/vercel/ai-chatbot), built for my own use.
-- Supports multiple models (Claude, DeepSeek Distilled, Gemini, Cohere, etc.)
+- Supports multiple models (Claude, DeepSeek R1 Distilled, Gemini, Cohere, etc.)
 - Custom prompting and tweaks for better responses.
-- Voice input capabilities using Google's Multimodal API
-- Custom agents for specific tasks (**coming soon**)
-
-## Features
-
-### Voice Input
-The chatbot now includes voice input capabilities similar to ChatGPT:
-- Click the microphone icon when the input field is empty
-- Record your voice and the audio will be processed by Google's Multimodal API
-- The transcribed text will appear in the input field, ready to be sent
-
-### Multiple AI Models
-Support for various AI models:
-- OpenAI (GPT-4, GPT-3.5)
-- Anthropic Claude
-- Google Gemini
-- Cohere Command
-- DeepSeek Distilled
-- And more...
+- Advanced Voice (Google Voice Real-Time API)
+- Custom agents for specific tasks (building this atm... could use MCP approach...)
 
 ### Writing Styles
-Choose from different writing styles for responses:
-- Normal
+- Normal 
 - Concise
 - Explanatory
 - Formal
 
-Basically, it's my own AI assistant, built my way :)  
+### Interactive Artifacts
+![Chat · 10 54pm · 03-24](https://github.com/user-attachments/assets/78ea1fc9-43e7-403c-8a83-12b507416440)
+![Chat · 10 52pm · 03-24](https://github.com/user-attachments/assets/109222f3-f50e-40d5-996f-29cf1dc0007b)
+
+Basically, it's my own chatbot, built my way :)  
