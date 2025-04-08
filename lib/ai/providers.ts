@@ -1,13 +1,14 @@
-import {
-  customProvider
+import { 
+  customProvider 
 } from 'ai';
 import { anthropic } from '@ai-sdk/anthropic';
 import { google } from '@ai-sdk/google';
 import { cohere } from '@ai-sdk/cohere';
-import { createTogetherAI } from '@ai-sdk/togetherai';
+import { createOpenAI } from '@ai-sdk/openai';
 
-const togetherai = createTogetherAI({
-  apiKey: process.env.TOGETHER_AI_API_KEY ?? '',
+const openai = createOpenAI({
+  baseURL: "https://models.inference.ai.azure.com",
+  apiKey: process.env["GITHUB_TOKEN"],
 });
 
 export const myProvider = customProvider({
@@ -17,11 +18,9 @@ export const myProvider = customProvider({
     'gemini-2-5-pro-exp': google('gemini-2.5-pro-exp-03-25', { useSearchGrounding: true }),
     'gemini-2-0-flash': google('gemini-2.0-flash-001', { useSearchGrounding: true }),
     'cohere-command-a': cohere('command-a-03-2025'),
-    
-    // Deep Seek R1 via Together AI
-    'deepseek-r1': togetherai('deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free') as any,
-
-    'title-model': google('gemini-1.5-flash-latest'),
-    'artifact-model': google('gemini-1.5-flash-latest'),
+    'title-model': google('gemini-2.0-flash-001'),
+    'artifact-model': anthropic('claude-3-5-haiku-latest'),
+    'gpt-4o': openai('gpt-4o'),
+    'deepseek-r1': openai('DeepSeek-R1')
   },
 });

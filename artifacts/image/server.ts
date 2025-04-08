@@ -8,7 +8,7 @@ export const imageDocumentHandler = createDocumentHandler<'image'>({
     let draftContent = '';
 
     const { image } = await experimental_generateImage({
-      model: myProvider.imageModel('small-model'),
+      model: myProvider.imageModel('gemini-2-0-flash'),
       prompt: title,
       n: 1,
     });
