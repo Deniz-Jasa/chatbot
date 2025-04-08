@@ -48,7 +48,7 @@ export function CodeBlock({
             language={language}
             style={resolvedTheme === 'dark' ? materialDark : oneLight}
             customStyle={{
-              background: resolvedTheme === 'dark' ? '#1B1B1B' : '#F9F9F9',
+              background: resolvedTheme === 'transparent',
               fontSize: '10pt',
               margin: 0,
               padding: 0,
@@ -67,7 +67,7 @@ export function CodeBlock({
   } else {
     return (
       <code
-        className={`${className} text-sm bg-zinc-100 dark:bg-zinc-800 py-0.5 px-1 rounded-md`}
+        className={`${className} text-sm bg-zinc-100 dark:bg-transparent py-0.5 px-1 rounded-md`}
         {...props}
       >
         {children}
