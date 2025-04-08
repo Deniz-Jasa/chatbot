@@ -23,7 +23,7 @@ import { useLocalStorage, useWindowSize, useOnClickOutside } from 'usehooks-ts';
 
 import { sanitizeUIMessages } from '@/lib/utils';
 
-import { ArrowUpIcon, PaperclipIcon, StopIcon, ChevronDownIcon, MicIcon } from './icons';
+import { ArrowUpIcon, PaperclipIcon, StopIcon, ChevronDownIcon, MicIcon, SearchIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
@@ -101,6 +101,7 @@ function PureMultimodalInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
   const styleDropdownRef = useRef<HTMLDivElement>(null);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   // Close dropdown when clicking outside
   useOnClickOutside(styleDropdownRef, () => {
@@ -123,11 +124,11 @@ function PureMultimodalInput({
     }
   };
 
-  const resetHeight = () => {
+  const resetHeight = useCallback(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = '98px';
     }
-  };
+  }, [textareaRef]);
 
   const [localStorageInput, setLocalStorageInput] = useLocalStorage(
     'input',
@@ -221,14 +222,16 @@ function PureMultimodalInput({
     console.log('Submitting message with details:', {
       content: input,
       style: currentStyle,
-      hasAttachments: attachments.length > 0
+      hasAttachments: attachments.length > 0,
+      isSearchEnabled: isSearchActive
     });
     
-    // Submit with current style value
+    // Submit with current style value and search state
     append(userMessage, {
       experimental_attachments: attachments,
       body: {
         selectedWritingStyle: currentStyle,
+        useSearchGrounding: isSearchActive
       },
     });
     
@@ -240,7 +243,7 @@ function PureMultimodalInput({
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
-  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, resetHeight]);
+  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, resetHeight, isSearchActive]);
 
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);
@@ -376,6 +379,10 @@ function PureMultimodalInput({
     }
   };
 
+  const toggleSearch = useCallback(() => {
+    setIsSearchActive(!isSearchActive);
+  }, [isSearchActive]);
+
   return (
     <div
       className={cx(
@@ -434,7 +441,7 @@ function PureMultimodalInput({
           className={cx(
             'min-h-[98px] w-full p-4 pb-12 max-h-[calc(75dvh)] mt-3 overflow-hidden resize-none rounded-t-2xl !rounded-b-none !text-sm',
             selectedStyle === 'Normal' 
-              ? 'bg-muted'
+              ? 'bg-background'
               : [
                   'bg-gradient-to-l via-muted',  // Changed to-l for left direction
                   selectedStyle === 'Concise' && 'from-blue-50/50',
@@ -470,6 +477,15 @@ function PureMultimodalInput({
 
         <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start gap-2">
           <AttachmentsButton fileInputRef={fileInputRef} status={status} />
+          {/* <Button
+            data-testid="search-button"
+            className="rounded-md rounded-bl-lg p-[7px] h-fit dark:border-zinc-700 hover:dark:bg-zinc-900 hover:bg-zinc-200"
+            onClick={toggleSearch}
+            disabled={status !== 'ready'}
+            variant={isSearchActive ? "default" : "ghost"}
+          >
+            <SearchIcon size={14} />
+          </Button> */}
         </div>
 
         <div className="absolute bottom-0 right-0 p-2 px-4 w-fit flex flex-row justify-end gap-2">
@@ -498,7 +514,7 @@ function PureMultimodalInput({
               </Button>
               
               {styleDropdownOpen && (
-                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#191919] rounded-md z-10 py-1 border dark:border-[#303030] dark:border-[#303030] w-30">
+                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#191919] rounded-md z-10 py-1 border dark:border-[#303030] w-30">
                   {Object.keys(writingStylePrompts).map((style) => (
                     <button
                       key={style}

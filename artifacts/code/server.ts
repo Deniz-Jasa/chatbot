@@ -11,7 +11,6 @@ export const codeDocumentHandler = createDocumentHandler<'code'>({
 
     const { fullStream } = streamObject({
       model: myProvider.languageModel('artifact-model'),
-      system: codePrompt,
       prompt: title,
       schema: z.object({
         code: z.string(),

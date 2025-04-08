@@ -30,14 +30,14 @@ function PureChatHeader({
   const { width: windowWidth } = useWindowSize();
 
   return (
-    <header className="flex sticky top-0 bg-background py-1.5 items-center px-2 md:px-2 gap-2">
+    <header className="flex sticky top-0 bg-background items-center p-7 gap-2">
       <SidebarToggle />
 
       {(!open || windowWidth < 768) && (
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant="outline"
+              variant="ghost"
               className="order-2 md:order-1 md:px-2 px-3 md:h-fit ml-auto md:ml-0"
               onClick={() => {
                 router.push('/');
@@ -58,13 +58,6 @@ function PureChatHeader({
         />
       )}
 
-      {!isReadonly && (
-        <VisibilitySelector
-          chatId={chatId}
-          selectedVisibilityType={selectedVisibilityType}
-          className="order-1 md:order-3"
-        />
-      )}
     </header>
   );
 }

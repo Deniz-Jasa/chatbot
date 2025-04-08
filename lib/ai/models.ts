@@ -8,9 +8,14 @@ interface ChatModel {
 
 export const chatModels: Array<ChatModel> = [
   {
-    "id": "gemini-1-5-flash",
-    "name": "Gemini 1.5 Flash",
+    "id": "gemini-2-0-flash",
+    "name": "Gemini 2.0 Flash",
     "description": "High-speed chat model for quick tasks"
+  },
+  {
+    "id": "gemini-2-5-pro-exp",
+    "name": "Gemini 2.5 Pro",
+    "description": "Advanced chat model for complex tasks"
   },
   {
     "id": "claude-3-5",
@@ -24,12 +29,12 @@ export const chatModels: Array<ChatModel> = [
   },
   {
     "id": "deepseek-r1",
-    "name": "Deepseek R1 Distill",
+    "name": "DeepSeek R1",
     "description": "Built for deep reasoning; fully distilled for unrestricted access"
   },
   {
-    "id": "cohere-command-r",
-    "name": "Cohere Command-R",
+    "id": "cohere-command-a",
+    "name": "Cohere Command-A",
     "description": "Optimized for advanced RAG and comprehensive knowledge tasks"
   }
 ];

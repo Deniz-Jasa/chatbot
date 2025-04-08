@@ -37,18 +37,20 @@ export function PureMessageActions({
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-0.5">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              className="py-1 px-1 h-fit text-muted-foreground"
+              className="p-1 ml-[-5px] h-fit text-muted-foreground"
               variant="ghost"
               onClick={async () => {
                 await copyToClipboard(message.content as string);
                 toast.success('Copied to clipboard!');
               }}
             >
-              <CopyIcon />
+              <span className="scale-75">
+                <CopyIcon />
+              </span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>Copy</TooltipContent>
@@ -101,7 +103,9 @@ export function PureMessageActions({
                 });
               }}
             >
-              <ThumbUpIcon />
+              <span className="scale-75">
+                <ThumbUpIcon />
+              </span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>Upvote Response</TooltipContent>
@@ -111,7 +115,7 @@ export function PureMessageActions({
           <TooltipTrigger asChild>
             <Button
               data-testid="message-downvote"
-              className="py-1 px-1 h-fit text-muted-foreground !pointer-events-auto"
+              className="p-1 h-fit text-muted-foreground !pointer-events-auto"
               variant="ghost"
               disabled={vote && !vote.isUpvoted}
               onClick={async () => {
@@ -154,7 +158,9 @@ export function PureMessageActions({
                 });
               }}
             >
-              <ThumbDownIcon />
+              <span className="scale-75">
+                <ThumbDownIcon />
+              </span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>Downvote Response</TooltipContent>

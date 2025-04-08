@@ -347,11 +347,10 @@ const PureToolbar = ({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-
     timeoutRef.current = setTimeout(() => {
       setSelectedTool(null);
       setIsToolbarVisible(false);
-    }, 2000);
+    }, 500);
   };
 
   const cancelCloseTimer = () => {

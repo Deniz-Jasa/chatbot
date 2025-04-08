@@ -1,11 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
-import { python } from '@codemirror/lang-python';
-import { oneDark } from '@codemirror/theme-one-dark';
-import { basicSetup } from 'codemirror';
+import { useState } from 'react';
+import { useTheme } from 'next-themes';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { materialDark, oneLight} from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface CodeBlockProps {
   node: any;
@@ -22,8 +20,7 @@ export function CodeBlock({
   ...props
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const editorContainerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<EditorView | null>(null);
+  const { resolvedTheme } = useTheme();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(children).then(() => {
@@ -32,48 +29,39 @@ export function CodeBlock({
     });
   };
 
-  useEffect(() => {
-    if (editorContainerRef.current && !editorRef.current) {
-      const startState = EditorState.create({
-        doc: children,
-        extensions: [basicSetup, python(), oneDark],
-      });
-
-      editorRef.current = new EditorView({
-        state: startState,
-        parent: editorContainerRef.current,
-      });
-    }
-
-    return () => {
-      if (editorRef.current) {
-        editorRef.current.destroy();
-        editorRef.current = null;
-      }
-    };
-  }, [children]);
-
   if (!inline) {
-    // Extract language from className (e.g., "language-python")
     const language = className?.replace('language-', '') || 'text';
 
     return (
-      <div className="not-prose flex flex-col bg-[#191919] rounded-xl border border-[#303030] overflow-hidden">
-        {/* Header */}
-        <div className="flex justify-between items-center bg-[#303030] text-zinc-400 px-4 py-2 text-[9pt]">
+      <div className="not-prose flex flex-col rounded-[8px] border border-zinc-300 dark:border-[#303030] overflow-hidden my-1">
+        <div className="flex justify-between items-center bg-zinc-100 dark:bg-[#303030] text-zinc-500 dark:text-zinc-400 px-4 py-2 text-[9pt]">
           <span>{language}</span>
           <button
             onClick={handleCopy}
-            className="text-zinc-400 hover:text-zinc-200"
+            className="hover:text-zinc-800 dark:hover:text-zinc-200"
           >
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
-        {/* Code Editor */}
-        <div
-          ref={editorContainerRef}
-          className="text-sm w-full overflow-x-auto p-4 dark:bg-[#191919] text-zinc-50"
-        />
+        <div className="text-sm w-full overflow-x-auto p-4 text-zinc-800 dark:text-zinc-50">
+          <SyntaxHighlighter
+            language={language}
+            style={resolvedTheme === 'dark' ? materialDark : oneLight}
+            customStyle={{
+              background: resolvedTheme === 'dark' ? '#1B1B1B' : '#F9F9F9',
+              fontSize: '10pt',
+              margin: 0,
+              padding: 0,
+            }}
+            codeTagProps={{
+              style: {
+                textDecoration: 'none',
+              },
+            }}
+          >
+            {String(children).replace(/\n$/, '')}
+          </SyntaxHighlighter>
+        </div>
       </div>
     );
   } else {

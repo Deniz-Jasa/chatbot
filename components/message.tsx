@@ -112,7 +112,7 @@ const PurePreviewMessage = ({
     <AnimatePresence>
       <motion.div
         data-testid={`message-${message.role}`}
-        className="w-full mx-auto max-w-3xl px-7 group/message mb-12"
+        className="w-full mx-auto max-w-3xl px-7 group/message mt-4"
         initial={{ y: 5, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         data-role={message.role}
@@ -126,15 +126,15 @@ const PurePreviewMessage = ({
             },
           )}
         >
-          {message.role === 'assistant' && (
+          {/* {message.role === 'assistant' && (
             <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border bg-background">
               <div className="translate-y-px">
                 <SparklesIcon size={14} />
               </div>
             </div>
-          )}
+          )} */}
 
-          <div className="flex flex-col gap-4 w-full mt-[7px]">
+          <div className="flex flex-col gap-4 w-full">
             {message.experimental_attachments && (
               <div
                 data-testid={`message-attachments`}
@@ -161,7 +161,7 @@ const PurePreviewMessage = ({
                 data-testid="message-content"
                 className="gap-2 items-start"
               >
-                {message.role === 'user' && !isReadonly && (
+                {/* {message.role === 'user' && !isReadonly && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -177,11 +177,11 @@ const PurePreviewMessage = ({
                     </TooltipTrigger>
                     <TooltipContent>Edit message</TooltipContent>
                   </Tooltip>
-                )}
+                )} */}
 
                 <div
                   className={cn('flex flex-col gap-4 text-sm', {
-                    'bg-[#303030] text-white px-4 py-3 rounded-xl':
+                    'bg-[#303030] text-white px-4 py-3 rounded-3xl':
                       message.role === 'user',
                   })}
                 >
@@ -320,32 +320,27 @@ export const ThinkingMessage = () => {
   return (
     <motion.div
       data-testid="message-assistant-loading"
-      className="w-full mx-auto max-w-3xl px-4 group/message "
+      className="w-full mx-auto max-w-3xl p-4 flex justify-start items-center"
       initial={{ y: 5, opacity: 0 }}
-      animate={{ y: 0, opacity: 1, transition: { delay: 1 } }}
+      animate={{ y: 0, opacity: 1 }}
       data-role={role}
     >
-      <div
-        className={cx(
-          'flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl',
-          {
-            'group-data-[role=user]/message:bg-muted': true,
-          },
-        )}
-      >
-        <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">
-          <SparklesIcon size={14} />
-        </div>
-
-        <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-4 text-muted-foreground mt-[5px] text-[11pt]">
-            Thinking...
-          </div>
-        </div>
-      </div>
+      <motion.div
+        className="size-2 rounded-full bg-white ml-3"
+        animate={{
+          scale: [1, 1.5, 1],
+          opacity: [0.8, 1, 0.8],
+        }}
+        transition={{
+          duration: 1,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
     </motion.div>
   );
 };
+
 
 export const MessageThinking = ({ 
   thinkingContent, 
@@ -400,7 +395,6 @@ export const MessageThinking = ({
             animate="expanded"
             exit="collapsed"
             variants={variants}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
             style={{ overflow: 'hidden' }}
             className="pl-4 text-zinc-600 dark:text-[#9C9C9C] border-l flex flex-col gap-4 mt-2"
           >

@@ -27,7 +27,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       <SidebarHeader>
         <SidebarMenu className="p-4">
           <div className="flex flex-row justify-between items-center">
-              <span className="text-lg font-semibold px-2">
+              <span className="text-lg font-semibold p-2">
                 Chat History
               </span>
             <Tooltip>
@@ -50,7 +50,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           </div>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="pl-4 pr-4">
+      <SidebarContent className="px-4">
         <SidebarHistory user={user} />
       </SidebarContent>
       <SidebarFooter className="p-6">{user && <SidebarUserNav user={user} />}</SidebarFooter>
