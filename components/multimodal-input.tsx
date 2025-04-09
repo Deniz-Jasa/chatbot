@@ -108,11 +108,11 @@ function PureMultimodalInput({
     setStyleDropdownOpen(false);
   });
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      adjustHeight();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (textareaRef.current) {
+  //     adjustHeight();
+  //   }
+  // }, []);
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -141,7 +141,7 @@ function PureMultimodalInput({
       // Prefer DOM value over localStorage to handle hydration
       const finalValue = domValue || localStorageInput || '';
       setInput(finalValue);
-      adjustHeight();
+      // adjustHeight();
     }
     // Only run once after hydration
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -238,12 +238,12 @@ function PureMultimodalInput({
     setAttachments([]);
     setInput('');
     setLocalStorageInput('');
-    resetHeight();
+    // resetHeight();
 
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
-  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, resetHeight, isSearchActive]);
+  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, isSearchActive]);
 
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);
@@ -374,9 +374,9 @@ function PureMultimodalInput({
     setInput(text);
     
     // Auto-resize textarea after setting input
-    if (textareaRef.current) {
-      adjustHeight();
-    }
+    // if (textareaRef.current) {
+    //   adjustHeight();
+    // }
   };
 
   const toggleSearch = useCallback(() => {

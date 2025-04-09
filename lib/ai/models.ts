@@ -23,6 +23,11 @@ export const chatModels: Array<ChatModel> = [
     "description": "Multi-model chat model for everyday tasks"
   },
   {
+    "id": "mistral-large",
+    "name": "Mistral Large",
+    "description": "Powerful model for coding, research, and more!"
+  },
+  {
     "id": "claude-3-5",
     "name": "Claude 3.5 Haiku",
     "description": "Fast and efficient Claude model for everyday use"
@@ -32,11 +37,11 @@ export const chatModels: Array<ChatModel> = [
     "name": "Claude 3.7 Sonnet",
     "description": "Latest Claude model with enhanced reasoning and coding"
   },
-  {
-    "id": "deepseek-r1",
-    "name": "DeepSeek R1",
-    "description": "Built for deep reasoning; fully distilled for unrestricted access"
-  },
+  // {
+  //   "id": "deepseek-r1",
+  //   "name": "DeepSeek R1",
+  //   "description": "Built for deep reasoning; fully distilled for unrestricted access"
+  // },
   {
     "id": "cohere-command-a",
     "name": "Cohere Command-A",
