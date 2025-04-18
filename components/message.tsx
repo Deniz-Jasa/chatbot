@@ -180,8 +180,8 @@ const PurePreviewMessage = ({
                 )} */}
 
                 <div
-                  className={cn('flex flex-col gap-4 text-sm', {
-                    'bg-[#303030] text-white px-4 py-3 rounded-3xl':
+                  className={cn('flex flex-col gap-4 text-[11pt] font-medium leading-[1.8]', {
+                    'bg-[#303030] text-white px-4 pt-2 pb-[7px] rounded-3xl':
                       message.role === 'user',
                   })}
                 >

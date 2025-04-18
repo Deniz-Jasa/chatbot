@@ -105,6 +105,7 @@ export async function POST(request: Request) {
           model: myProvider.languageModel(selectedChatModel),
           system: stylePrompt ? `${systemPrompt({ selectedChatModel })}\n${stylePrompt}` : systemPrompt({ selectedChatModel }),
           messages,
+          temperature: 1,
           maxSteps: 5,
           experimental_activeTools:
             selectedChatModel === 'claude-3-5-haiku'
@@ -140,6 +141,12 @@ export async function POST(request: Request) {
                 }),
               },
           onFinish: async ({ response, reasoning }) => {
+            console.log('onFinish called with response:', {
+              messageCount: response.messages.length,
+              messages: response.messages,
+              reasoning
+            });
+            
             if (session.user?.id) {
               try {
                 const sanitizedResponseMessages = sanitizeResponseMessages({
@@ -147,8 +154,13 @@ export async function POST(request: Request) {
                   reasoning,
                 });
 
-                await saveMessages({
-                  messages: sanitizedResponseMessages.map((message) => {
+                console.log('After sanitization:', {
+                  sanitizedCount: sanitizedResponseMessages.length,
+                  sanitizedMessages: sanitizedResponseMessages
+                });
+
+                if (sanitizedResponseMessages.length > 0) {
+                  const dbMessages = sanitizedResponseMessages.map((message) => {
                     return {
                       id: message.id,
                       chatId: id,
@@ -156,10 +168,23 @@ export async function POST(request: Request) {
                       content: message.content,
                       createdAt: new Date(),
                     };
-                  }),
-                });
+                  });
+
+                  console.log('Attempting to save messages:', {
+                    count: dbMessages.length,
+                    messages: dbMessages
+                  });
+
+                  await saveMessages({
+                    messages: dbMessages,
+                  });
+
+                  console.log('Successfully saved messages to database');
+                } else {
+                  console.log('No messages to save after sanitization');
+                }
               } catch (error) {
-                console.error('Failed to save chat');
+                console.error('Failed to save chat:', error);
               }
             }
           },

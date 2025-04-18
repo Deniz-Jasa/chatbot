@@ -21,7 +21,10 @@ export const myProvider = customProvider({
     'title-model': google('gemini-2.0-flash-001'),
     'artifact-model': anthropic('claude-3-5-haiku-latest'),
     'gpt-4o': openai('gpt-4o'),
+    'gpt-o4-mini': openai('o4-mini'),
+    'gpt-4.1': openai('gpt-4.1'),
+    'gpt-o3': openai('o3'),
     'mistral-large': openai('Mistral-large-2411'),
-    'deepseek-r1': openai('DeepSeek-V3-0324')
+    'deepseek-r1': openai('MAI-DS-R1')
   },
 });

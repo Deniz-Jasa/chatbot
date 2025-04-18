@@ -23,6 +23,21 @@ export const chatModels: Array<ChatModel> = [
     "description": "Multi-model chat model for everyday tasks"
   },
   {
+    "id": "gpt-4.1",
+    "name": "ChatGPT 4.1",
+    "description": "Chat model for that excels in coding."
+  },
+  {
+    "id": "gpt-o4-mini",
+    "name": "ChatGPT o4-mini",
+    "description": "Reasoning model for that excels in coding."
+  },
+  {
+    "id": "gpt-o3",
+    "name": "ChatGPT o3",
+    "description": "Multi-model chat model for everyday tasks"
+  },
+  {
     "id": "mistral-large",
     "name": "Mistral Large",
     "description": "Powerful model for coding, research, and more!"
@@ -37,11 +52,6 @@ export const chatModels: Array<ChatModel> = [
     "name": "Claude 3.7 Sonnet",
     "description": "Latest Claude model with enhanced reasoning and coding"
   },
-  // {
-  //   "id": "deepseek-r1",
-  //   "name": "DeepSeek R1",
-  //   "description": "Built for deep reasoning; fully distilled for unrestricted access"
-  // },
   {
     "id": "cohere-command-a",
     "name": "Cohere Command-A",

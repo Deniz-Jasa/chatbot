@@ -126,7 +126,7 @@ function PureMultimodalInput({
 
   const resetHeight = useCallback(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = '98px';
+      textareaRef.current.style.height = '105px';
     }
   }, [textareaRef]);
 
@@ -238,12 +238,12 @@ function PureMultimodalInput({
     setAttachments([]);
     setInput('');
     setLocalStorageInput('');
-    // resetHeight();
+    resetHeight();
 
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
-  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, isSearchActive]);
+  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, isSearchActive, resetHeight]);
 
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);
