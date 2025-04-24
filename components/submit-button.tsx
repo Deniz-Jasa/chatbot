@@ -20,16 +20,14 @@ export function SubmitButton({
       type={pending ? 'button' : 'submit'}
       aria-disabled={pending || isSuccessful}
       disabled={pending || isSuccessful}
-      className="relative"
+      className="relative bg-muted border border-input text-[#E4E4E4] hover:bg-[#242424]"
     >
       {children}
-
       {(pending || isSuccessful) && (
         <span className="animate-spin absolute right-4">
           <LoaderIcon />
         </span>
       )}
-
       <output aria-live="polite" className="sr-only">
         {pending || isSuccessful ? 'Loading' : 'Submit form'}
       </output>

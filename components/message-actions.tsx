@@ -43,9 +43,19 @@ export function PureMessageActions({
             <Button
               className="p-1 ml-[-5px] h-fit text-muted-foreground"
               variant="ghost"
-              onClick={async () => {
-                await copyToClipboard(message.content as string);
-                toast.success('Copied to clipboard!');
+              onClick={() => {
+                copyToClipboard(message.content as string);
+                const button = document.activeElement as HTMLButtonElement;
+                const icon = button.querySelector('span');
+                if (icon) {
+                  const originalIcon = icon.innerHTML;
+                  const checkIcon = document.createElement('span');
+                  checkIcon.innerHTML = `<svg height="16" strokeLinejoin="round" viewBox="0 0 16 16" width="16" style="color: currentcolor"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 8C16 12.4183 12.4183 16 8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8ZM11.5303 6.53033L12.0607 6L11 4.93934L10.4697 5.46967L6.5 9.43934L5.53033 8.46967L5 7.93934L3.93934 9L4.46967 9.53033L5.96967 11.0303C6.26256 11.3232 6.73744 11.3232 7.03033 11.0303L11.5303 6.53033Z" fill="currentColor"/></svg>`;
+                  icon.replaceChildren(checkIcon);
+                  setTimeout(() => {
+                    icon.innerHTML = originalIcon;
+                  }, 5000);
+                }
               }}
             >
               <span className="scale-75">
@@ -53,14 +63,14 @@ export function PureMessageActions({
               </span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Copy</TooltipContent>
+          <TooltipContent side="bottom">Copy</TooltipContent>
         </Tooltip>
 
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
               data-testid="message-upvote"
-              className="py-1 px-1 h-fit text-muted-foreground !pointer-events-auto"
+              className="p-1 h-fit text-muted-foreground !pointer-events-auto"
               disabled={vote?.isUpvoted}
               variant="ghost"
               onClick={async () => {
@@ -108,7 +118,7 @@ export function PureMessageActions({
               </span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Upvote Response</TooltipContent>
+          <TooltipContent side="bottom">Upvote Response</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -163,7 +173,7 @@ export function PureMessageActions({
               </span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Downvote Response</TooltipContent>
+          <TooltipContent side="bottom">Downvote Response</TooltipContent>
         </Tooltip>
       </div>
     </TooltipProvider>

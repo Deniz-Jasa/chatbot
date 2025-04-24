@@ -23,11 +23,10 @@ import { useLocalStorage, useWindowSize, useOnClickOutside } from 'usehooks-ts';
 
 import { sanitizeUIMessages } from '@/lib/utils';
 
-import { ArrowUpIcon, PaperclipIcon, StopIcon, ChevronDownIcon, MicIcon, SearchIcon } from './icons';
+import { ArrowUpIcon, PaperclipIcon, StopIcon, MicIcon, SearchIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 import { UseChatHelpers, UseChatOptions } from '@ai-sdk/react';
 import { VoiceModal } from './voice-modal';
@@ -259,7 +258,7 @@ function PureMultimodalInput({
     
   }, [chatId, attachments, submitWithCurrentStyle]);
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = useCallback(async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -284,7 +283,7 @@ function PureMultimodalInput({
     } catch (error) {
       toast.error('Failed to upload file, please try again!');
     }
-  };
+  }, []);
 
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
@@ -309,7 +308,7 @@ function PureMultimodalInput({
         setUploadQueue([]);
       }
     },
-    [setAttachments],
+    [setAttachments, uploadFile],
   );
 
   const handleDragOver = useCallback((event: React.DragEvent) => {
@@ -390,12 +389,6 @@ function PureMultimodalInput({
         'sticky bottom-0 bg-background px-3 @container/input w-full flex flex-col gap-2',
       )}
     >
-      {messages.length === 0 &&
-        attachments.length === 0 &&
-        uploadQueue.length === 0 && (
-          <SuggestedActions append={append} chatId={chatId} />
-        )}
-
       <input
         type="file"
         className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
@@ -408,7 +401,7 @@ function PureMultimodalInput({
       {(attachments.length > 0 || uploadQueue.length > 0) && (
         <div
           data-testid="attachments-preview"
-          className="flex flex-row gap-2 overflow-x-scroll items-end"
+          className="flex flex-row gap-2 mb-[-20px] overflow-x-scroll items-end"
         >
           {attachments.map((attachment) => (
             <PreviewAttachment 
@@ -439,19 +432,7 @@ function PureMultimodalInput({
           value={input}
           onChange={handleInput}
           className={cx(
-            'min-h-[98px] w-full p-4 pb-12 max-h-[calc(75dvh)] mt-3 overflow-hidden resize-none rounded-t-2xl !rounded-b-none !text-sm',
-            selectedStyle === 'Normal' 
-              ? 'bg-background'
-              : [
-                  'bg-gradient-to-l via-muted',  // Changed to-l for left direction
-                  selectedStyle === 'Concise' && 'from-blue-50/50',
-                  selectedStyle === 'Explanatory' && 'from-amber-50/50',
-                  selectedStyle === 'Formal' && 'from-purple-50/50',
-                  selectedStyle === 'Concise' && 'dark:from-blue-900/5',
-                  selectedStyle === 'Explanatory' && 'dark:from-amber-900/5',
-                  selectedStyle === 'Formal' && 'dark:from-purple-900/5',
-              ],
-              isDraggingOver && 'border-t-2 border-l-2 border-r-2 border-dashed border-primary border-b-0 bg-primary/10'
+            'min-h-[115px] w-full p-5 pb-16 max-h-[calc(75dvh)] mt-3 mb-3 overflow-hidden resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1A1A1A]'
           )}
           rows={2}
           autoFocus
@@ -475,20 +456,8 @@ function PureMultimodalInput({
           onDrop={handleDrop}
         />
 
-        <div className="absolute bottom-0 p-2 w-fit flex flex-row justify-start gap-2">
+        <div className="absolute bottom-0 p-[19px] py-6 w-fit flex flex-row justify-start gap-2">
           <AttachmentsButton fileInputRef={fileInputRef} status={status} />
-          {/* <Button
-            data-testid="search-button"
-            className="rounded-md rounded-bl-lg p-[7px] h-fit dark:border-zinc-700 hover:dark:bg-zinc-900 hover:bg-zinc-200"
-            onClick={toggleSearch}
-            disabled={status !== 'ready'}
-            variant={isSearchActive ? "default" : "ghost"}
-          >
-            <SearchIcon size={14} />
-          </Button> */}
-        </div>
-
-        <div className="absolute bottom-0 right-0 p-2 px-4 w-fit flex flex-row justify-end gap-2">
           <ClientOnly>
             <div className="relative" ref={styleDropdownRef}>
               <Button
@@ -496,25 +465,52 @@ function PureMultimodalInput({
                 size="sm"
                 type="button"
                 className={cx(
-                  "h-7 text-xs rounded-lg flex gap-0 items-center",
-                  selectedStyle !== 'Normal' && [
-                    styleColorMap[selectedStyle].bg,
-                    styleColorMap[selectedStyle].darkBg,
-                    styleColorMap[selectedStyle].text,
-                    styleColorMap[selectedStyle].darkText
-                  ]
+                  "rounded-full px-2.5 py-1.5 h-fit border dark:border-[#232323] transition-colors duration-200 flex items-center gap-1.5",
+                  selectedStyle === 'Normal' 
+                    ? 'bg-transparent hover:bg-transparent/5 dark:hover:bg-[#232323]'
+                    : [
+                        'bg-gradient-to-l via-muted/5',
+                        selectedStyle === 'Concise' && 'from-blue-100/30 dark:from-blue-900/10 hover:from-blue-100/40 hover:dark:bg-[#232323]',
+                        selectedStyle === 'Explanatory' && 'from-amber-100/30 dark:from-amber-900/10 hover:from-amber-100/40 hover:dark:bg-[#232323]',
+                        selectedStyle === 'Formal' && 'from-purple-100/30 dark:from-purple-900/10 hover:from-purple-100/40 hover:dark:bg-[#232323]',
+                    ]
                 )}
                 onClick={(event) => {
                   event.preventDefault();
                   setStyleDropdownOpen(!styleDropdownOpen);
                 }}
+                disabled={status !== 'ready'}
               >
-                {selectedStyle !== 'Normal' ? `Style: ${selectedStyle}` : 'Style: Normal'}
-                <ChevronDownIcon size={12} />
+                <svg 
+                  width="24" 
+                  height="24" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={cx(
+                    selectedStyle !== 'Normal' && [
+                      styleColorMap[selectedStyle].text,
+                      styleColorMap[selectedStyle].darkText
+                    ]
+                  )}
+                >
+                  <path d="M9 3V21M9 3L3 9M9 3L15 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M15 3H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M15 9H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M3 15H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M3 21H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                <span className={cx(
+                  "text-sm font-normal",
+                  selectedStyle !== 'Normal' && [
+                    styleColorMap[selectedStyle].text,
+                    styleColorMap[selectedStyle].darkText
+                  ]
+                )}>{selectedStyle}</span>
               </Button>
               
               {styleDropdownOpen && (
-                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#191919] rounded-md z-10 py-1 border dark:border-[#303030] w-30">
+                <div className="absolute bottom-full left-0 mb-1 bg-white dark:bg-[#191919] rounded-md z-10 py-1 border dark:border-[#303030] w-[120px]">
                   {Object.keys(writingStylePrompts).map((style) => (
                     <button
                       key={style}
@@ -545,7 +541,9 @@ function PureMultimodalInput({
               )}
             </div>
           </ClientOnly>
-          
+        </div>
+
+        <div className="absolute bottom-0 right-0 px-[19px] py-[22px] w-fit flex flex-row justify-end gap-2">
           {status === 'submitted' ? (
             <StopButton stop={stop} setMessages={setMessages} />
           ) : (
@@ -592,7 +590,10 @@ function PureAttachmentsButton({
   return (
     <Button
       data-testid="attachments-button"
-      className="rounded-md rounded-bl-lg p-[7px] h-fit dark:border-zinc-700 hover:dark:bg-zinc-900 hover:bg-zinc-200"
+      className={cx(
+        "rounded-full p-[8px] h-fit border dark:border-[#232323] transition-colors duration-200",
+        "bg-transparent hover:bg-transparent/5 dark:hover:bg-[#232323]"
+      )}
       onClick={(event) => {
         event.preventDefault();
         fileInputRef.current?.click();
@@ -600,7 +601,7 @@ function PureAttachmentsButton({
       disabled={status !== 'ready'}
       variant="ghost"
     >
-      <PaperclipIcon size={14} />
+      <PaperclipIcon size={20} />
     </Button>
   );
 }
@@ -617,14 +618,14 @@ function PureStopButton({
   return (
     <Button
       data-testid="stop-button"
-      className="rounded-full p-1.5 h-fit border dark:border-zinc-600"
+      className="rounded-full p-[8px] h-fit border dark:border-[#232323] hover:dark:bg-zinc-900 hover:bg-zinc-200"
       onClick={(event) => {
         event.preventDefault();
         stop();
         setMessages((messages) => sanitizeUIMessages(messages));
       }}
     >
-      <StopIcon size={14} />
+      <StopIcon size={20} />
     </Button>
   );
 }
@@ -642,7 +643,6 @@ function PureSendButton({
   uploadQueue: Array<string>;
   selectedStyle: WritingStyle;
 }) {
-  // Log the style being used when the component renders
   useEffect(() => {
     console.log('SendButton initialized with style:', selectedStyle);
   }, [selectedStyle]);
@@ -650,15 +650,15 @@ function PureSendButton({
   return (
     <Button
       data-testid="send-button"
-      className="rounded-full p-1.5 h-fit border dark:border-zinc-600"
+      className="rounded-full p-[8px] h-fit border dark:border-[#232323] hover:dark:bg-zinc-900 hover:bg-zinc-200"
       onClick={(event) => {
         event.preventDefault();
-        console.log(`Sending with style: ${selectedStyle}`); // Debug style
+        console.log(`Sending with style: ${selectedStyle}`);
         submitForm();
       }}
       disabled={input.length === 0 || uploadQueue.length > 0}
     >
-      <ArrowUpIcon size={14} />
+      <ArrowUpIcon size={20} />
     </Button>
   );
 }

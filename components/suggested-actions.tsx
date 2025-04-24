@@ -17,23 +17,23 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
       title: 'Check the weather',
-      label: 'in Toronto',
-      action: 'What is the weather in Toronto?',
+      label: 'at my current location',
+      action: 'What is the weather in Britannia, Ottawa, Canada?',
     },
     {
       title: 'Find a good restaurant',
-      label: 'for Italian food near the Annex in Toronto',
-      action: 'Find a good Italian restaurant near the Annex in Toronto.',
+      label: 'for Italian food near me',
+      action: 'Find a good Italian restaurant in Ottawa, Canada.',
     },
     {
       title: 'Latest news on',
       label: 'technology, sports, and world news',
-      action: 'What is the latest news on technlogy, sports, and the world?',
+      action: 'What is the latest news on technlogy, sports, and the world (western perspective)?',
     },
     {
       title: 'Quick meal ideas',
-      label: 'with high protein for a busy weekday',
-      action: 'Give me some quick meal ideas with high protein low carbs for a busy weekday.',
+      label: 'with high protein for a busy week',
+      action: 'Give me some quick meal ideas with high protein low carbs for a busy week.',
     }
   ];
 

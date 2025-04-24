@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: 'quilled-sky-f24.notion.site',
+        hostname: 'avatar.vercel.sh',
+        
       },
     ],
   },

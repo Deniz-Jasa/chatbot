@@ -141,6 +141,12 @@ export function sanitizeResponseMessages({
   messages: Array<ResponseMessage>;
   reasoning: string | undefined;
 }) {
+  console.log('Starting sanitizeResponseMessages with:', {
+    messageCount: messages.length,
+    hasReasoning: !!reasoning,
+    messages: JSON.stringify(messages, null, 2) // Log full message content
+  });
+
   const toolResultIds: Array<string> = [];
 
   for (const message of messages) {
@@ -153,20 +159,42 @@ export function sanitizeResponseMessages({
     }
   }
 
+  console.log('Found tool result IDs:', toolResultIds);
+
   const messagesBySanitizedContent = messages.map((message) => {
     if (message.role !== 'assistant') return message;
 
-    if (typeof message.content === 'string') return message;
+    if (typeof message.content === 'string') {
+      console.log('Message has string content:', message.content);
+      return message;
+    }
 
-    const sanitizedContent = message.content.filter((content) =>
-      content.type === 'tool-call'
+    console.log('Sanitizing assistant message content:', JSON.stringify(message.content, null, 2));
+
+    const sanitizedContent = message.content.filter((content) => {
+      const keep = content.type === 'tool-call'
         ? toolResultIds.includes(content.toolCallId)
         : content.type === 'text'
           ? content.text.length > 0
-          : true,
-    );
+          : true;
+      
+      console.log('Content item:', {
+        type: content.type,
+        keep,
+        content: JSON.stringify(content)
+      });
+      
+      return keep;
+    });
+
+    console.log('After content sanitization:', {
+      originalLength: message.content.length,
+      sanitizedLength: sanitizedContent.length,
+      sanitizedContent: JSON.stringify(sanitizedContent, null, 2)
+    });
 
     if (reasoning) {
+      console.log('Adding reasoning to message');
       // @ts-expect-error: reasoning message parts in sdk is wip
       sanitizedContent.push({ type: 'reasoning', reasoning });
     }
@@ -177,9 +205,26 @@ export function sanitizeResponseMessages({
     };
   });
 
-  return messagesBySanitizedContent.filter(
-    (message) => message.content.length > 0,
+  const finalMessages = messagesBySanitizedContent.filter(
+    (message) => {
+      const keep = message.content.length > 0;
+      console.log('Filtering final message:', {
+        id: message.id,
+        role: message.role,
+        contentLength: message.content.length,
+        keep
+      });
+      return keep;
+    }
   );
+
+  console.log('Final sanitized messages:', {
+    originalCount: messages.length,
+    finalCount: finalMessages.length,
+    messages: JSON.stringify(finalMessages, null, 2)
+  });
+
+  return finalMessages;
 }
 
 export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {

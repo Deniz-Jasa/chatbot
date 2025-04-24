@@ -28,7 +28,7 @@ export function SidebarUserNav({ user }: { user: User }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent bg-background data-[state=open]:text-sidebar-accent-foreground h-10">
               <Image
-                src={"https://quilled-sky-f24.notion.site/image/attachment%3Af3081f9c-3285-41f3-b1ba-331766454531%3AScreenshot_2025-03-12_at_11.51.00_PM.png?table=block&id=1b5da405-b5a1-802e-991f-d1e0f61b689e&spaceId=576efde2-2f49-4f40-a623-16904abe725c&width=1420&userId=&cache=v2"}
+                src={`https://avatar.vercel.sh/${user.email}`}
                 alt={user.email ?? 'User Avatar'}
                 width={24}
                 height={24}

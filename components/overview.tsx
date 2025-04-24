@@ -1,11 +1,20 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { SuggestedActions } from './suggested-actions';
 
 import { MessageIcon, VercelIcon } from './icons';
 
 export const Overview = () => {
   const [showHelpText, setShowHelpText] = useState(false);
+
+  // Helper to get greeting based on time of day
+  function getGreeting() {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning, Deniz.';
+    if (hour < 18) return 'Good afternoon, Deniz.';
+    return 'Good evening, Deniz.';
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => setShowHelpText(true), 100);
@@ -28,18 +37,28 @@ export const Overview = () => {
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="text-lg font-bold"
+              className="text-xl font-bold"
             >
-              Hello there!
+              {getGreeting()}
             </motion.div>
             {showHelpText && (
               <motion.div
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="text-lg text-[#757575]"
+                className="text-xl text-[#757575]"
               >
                 How can I help you today?
+              </motion.div>
+            )}
+            {showHelpText && (
+              <motion.div
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 1 }}
+                className="mt-8"
+              >
+                <SuggestedActions chatId="" append={() => Promise.resolve(null)} />
               </motion.div>
             )}
           </div>

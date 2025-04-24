@@ -85,7 +85,7 @@
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
     .dark {
-        --background: 0 0% 11%;
+        --background: 0 0% 9%;
         --foreground: 0 0% 98%;
         --card: 240 10% 3.9%;
         --card-foreground: 0 0% 98%;
@@ -102,7 +102,7 @@
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
         --border: 240 3.7% 15.9%;
-        --input: 240 3.7% 15.9%;
+        --input: 0 0% 14%;
         --ring: 240 4.9% 83.9%;
         --chart-1: 220 70% 50%;
         --chart-2: 160 60% 45%;
@@ -127,20 +127,7 @@
 
     body {
         @apply bg-background text-foreground;
-    }
-
-    @font-face {
-        font-family: "geist";
-        font-style: normal;
-        font-weight: 100 900;
-        src: url(/fonts/geist.woff2) format("woff2");
-    }
-
-    @font-face {
-        font-family: "geist-mono";
-        font-style: normal;
-        font-weight: 100 900;
-        src: url(/fonts/geist-mono.woff2) format("woff2");
+        font-family: 'Inter', sans-serif;
     }
 }
 
@@ -222,4 +209,24 @@ input:focus {
 [data-testid="multimodal-input"]:focus {
     outline: none;
     @apply ring-2 ring-muted/20;
+}
+
+/* Autofill background fix for inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
 }

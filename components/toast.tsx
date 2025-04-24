@@ -23,7 +23,7 @@ function Toast(props: ToastProps) {
       <div
         data-testid="toast"
         key={id}
-        className="bg-zinc-100 p-3 rounded-lg w-full toast-mobile:w-fit flex flex-row gap-2 items-center"
+        className="bg-muted p-3 rounded-lg w-full flex flex-row gap-2 items-center"
       >
         <div
           data-type={type}
@@ -31,7 +31,7 @@ function Toast(props: ToastProps) {
         >
           {iconsByType[type]}
         </div>
-        <div className="text-zinc-950 text-sm">{description}</div>
+        <div className="text-[#E4E4E4] text-sm">{description}</div>
       </div>
     </div>
   );
