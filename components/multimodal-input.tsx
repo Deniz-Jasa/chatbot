@@ -107,27 +107,24 @@ function PureMultimodalInput({
     setStyleDropdownOpen(false);
   });
 
-  // useEffect(() => {
-  //   if (textareaRef.current) {
-  //     adjustHeight();
-  //   }
-  // }, []);
-
   const adjustHeight = () => {
     if (textareaRef.current) {
-      const minHeight = 98; // Set minimum height in pixels
-      textareaRef.current.style.height = `${minHeight}px`; // Set initial height
+      const minHeight = 110; // Minimum height in pixels
+      const maxHeight = 400; // Maximum height to prevent excessive growth
+      
+      // Reset height to auto to get proper scrollHeight
       textareaRef.current.style.height = 'auto';
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = `${Math.max(scrollHeight, minHeight)}px`;
+      
+      // Get the scroll height and constrain it between min and max
+      const scrollHeight = Math.min(Math.max(textareaRef.current.scrollHeight, minHeight), maxHeight);
+      textareaRef.current.style.height = `${scrollHeight}px`;
     }
   };
 
-  const resetHeight = useCallback(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = '105px';
-    }
-  }, [textareaRef]);
+  // Adjust height when input changes
+  useEffect(() => {
+    adjustHeight();
+  }, [input]);
 
   const [localStorageInput, setLocalStorageInput] = useLocalStorage(
     'input',
@@ -153,16 +150,7 @@ function PureMultimodalInput({
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = event.target.value;
     setInput(value);
-    
-    // Immediate height adjustment
-    requestAnimationFrame(() => {
-      if (textareaRef.current) {
-        const minHeight = 98;
-        textareaRef.current.style.height = 'auto';
-        const scrollHeight = textareaRef.current.scrollHeight;
-        textareaRef.current.style.height = `${Math.max(scrollHeight, minHeight)}px`;
-      }
-    });
+    adjustHeight();
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -237,12 +225,11 @@ function PureMultimodalInput({
     setAttachments([]);
     setInput('');
     setLocalStorageInput('');
-    resetHeight();
 
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
-  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, isSearchActive, resetHeight]);
+  }, [input, selectedStyle, attachments, append, setAttachments, setInput, setLocalStorageInput, width, textareaRef, isSearchActive]);
 
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);
@@ -371,16 +358,9 @@ function PureMultimodalInput({
   // Add handler for voice input
   const handleVoiceInput = (text: string) => {
     setInput(text);
-    
-    // Auto-resize textarea after setting input
-    // if (textareaRef.current) {
-    //   adjustHeight();
-    // }
+    // Adjust height after setting input
+    setTimeout(adjustHeight, 0);
   };
-
-  const toggleSearch = useCallback(() => {
-    setIsSearchActive(!isSearchActive);
-  }, [isSearchActive]);
 
   return (
     <div
@@ -432,7 +412,7 @@ function PureMultimodalInput({
           value={input}
           onChange={handleInput}
           className={cx(
-            'min-h-[115px] w-full p-5 pb-16 max-h-[calc(75dvh)] mt-3 mb-3 overflow-hidden resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1A1A1A]'
+            'min-h-[110px] max-h-[400px] w-full p-5 pb-16 mb-3 overflow-y-auto resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1D1D1D] transition-none whitespace-pre-wrap break-words'
           )}
           rows={2}
           autoFocus

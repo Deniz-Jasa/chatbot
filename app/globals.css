@@ -49,6 +49,14 @@
 }
 
 @layer base {
+    @font-face {
+        font-family: 'geist-mono';
+        src: url('/fonts/geist-mono.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+    }
+
     :root {
         --background: 0 0% 100%;
         --foreground: 240 10% 3.9%;

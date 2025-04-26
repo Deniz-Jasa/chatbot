@@ -103,7 +103,7 @@ const PurePreviewMessage = ({
   
   // Calculate thinking duration when thinking is complete
   useEffect(() => {
-    if (thinkingComplete && thinkingStartTime && !thinkingDuration) {
+    if (thinkingComplete && thinkingStartTime) {
       setThinkingDuration(Date.now() - thinkingStartTime);
     }
   }, [thinkingComplete, thinkingStartTime, thinkingDuration]);

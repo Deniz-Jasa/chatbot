@@ -43,7 +43,7 @@ export function CodeBlock({
             {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
-        <div className="text-sm w-full overflow-x-auto p-4 text-zinc-800 dark:text-zinc-50">
+        <div className="text-sm w-full overflow-x-auto p-4 text-zinc-800 dark:text-zinc-50 font-mono">
           <SyntaxHighlighter
             language={language}
             style={resolvedTheme === 'dark' ? materialDark : oneLight}
@@ -52,6 +52,7 @@ export function CodeBlock({
               fontSize: '10pt',
               margin: 0,
               padding: 0,
+              fontFamily: 'geist-mono',
             }}
             codeTagProps={{
               style: {
