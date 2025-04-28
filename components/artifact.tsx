@@ -66,6 +66,7 @@ function PureArtifact({
   reload,
   votes,
   isReadonly,
+  selectedModelId,
 }: {
   chatId: string;
   input: string;
@@ -81,6 +82,7 @@ function PureArtifact({
   handleSubmit: UseChatHelpers['handleSubmit'];
   reload: UseChatHelpers['reload'];
   isReadonly: boolean;
+  selectedModelId: string;
 }) {
   const { artifact, setArtifact, metadata, setMetadata } = useArtifact();
 
@@ -334,6 +336,7 @@ function PureArtifact({
                     messages={messages}
                     append={append}
                     setMessages={setMessages}
+                    selectedModelId={selectedModelId}
                   />
                 </form>
               </div>

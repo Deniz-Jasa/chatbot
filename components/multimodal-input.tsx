@@ -385,7 +385,7 @@ function PureMultimodalInput({
       {(attachments.length > 0 || uploadQueue.length > 0) && (
         <div
           data-testid="attachments-preview"
-          className="flex flex-row gap-2 mb-[-20px] overflow-x-scroll items-end"
+          className="flex flex-row gap-2 mb-[5px] overflow-x-scroll items-end"
         >
           {attachments.map((attachment) => (
             <PreviewAttachment 
@@ -416,7 +416,8 @@ function PureMultimodalInput({
           value={input}
           onChange={handleInput}
           className={cx(
-            'min-h-[110px] border dark:border-[#323232] max-h-[400px] w-full p-5 pb-16 mb-3 overflow-y-auto resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1D1D1D] transition-none whitespace-pre-wrap break-words'
+            'min-h-[110px] border dark:border-[#323232] max-h-[400px] w-full p-5 pb-16 mb-3 overflow-y-auto resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1D1D1D] transition-none whitespace-pre-wrap break-words',
+            isDraggingOver && 'border-dashed border-2 border-black dark:border-[#9A9A9A]'
           )}
           rows={2}
           autoFocus
