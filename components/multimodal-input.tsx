@@ -22,8 +22,7 @@ import { toast } from 'sonner';
 import { useLocalStorage, useWindowSize, useOnClickOutside } from 'usehooks-ts';
 
 import { sanitizeUIMessages } from '@/lib/utils';
-
-import { ArrowUpIcon, PaperclipIcon, StopIcon, MicIcon, SearchIcon } from './icons';
+import { ArrowUpIcon, PaperclipIcon, StopIcon, MicIcon, GlobeIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
@@ -57,7 +56,7 @@ type WritingStyle = 'Normal' | 'Concise' | 'Explanatory' | 'Formal';
 
 const writingStylePrompts: Record<WritingStyle, string> = {
   Normal: '',
-  Concise: '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not create or offer to create documents. Respond directly in the chat with brief text only. If editing or asked to proofread an email, write a concise and natural human-sounding email. Keep it focused on the message, avoiding fluff, corporate jargon, or overly formal language.</userStyle>',
+  Concise: '<userStyle>Do not create artifacts. You may write in any programming language. Provide code directly in the chat using Markdown. Be concise. Use short sentences. Avoid details or elaboration. Respond directly. Write clear, simple emails without jargon. </userStyle>',
   Explanatory: '<userStyle>Provide detailed explanations and background context. Break down complex concepts into digestible parts. Use examples when helpful. Aim to educate the user thoroughly on the topic.</userStyle>',
   Formal: '<userStyle>Use a formal, professional tone. Avoid colloquialisms and casual language. Use precise vocabulary and maintain proper grammar throughout. Structure your responses in a logical, organized manner.</userStyle>',
 };
@@ -83,6 +82,7 @@ function PureMultimodalInput({
   append,
   handleSubmit,
   className,
+  selectedModelId,
 }: {
   chatId: string;
   input: UseChatHelpers['input'];
@@ -96,11 +96,15 @@ function PureMultimodalInput({
   append: UseChatHelpers['append'];
   handleSubmit: UseChatHelpers['handleSubmit'];
   className?: string;
+  selectedModelId: string;
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
   const styleDropdownRef = useRef<HTMLDivElement>(null);
   const [isSearchActive, setIsSearchActive] = useState(false);
+
+  // Check if search is supported for current model
+  const isSearchSupported = selectedModelId === 'gemini-2-0-flash' || selectedModelId === 'gemini-2-5-pro-exp';
 
   // Close dropdown when clicking outside
   useOnClickOutside(styleDropdownRef, () => {
@@ -412,7 +416,7 @@ function PureMultimodalInput({
           value={input}
           onChange={handleInput}
           className={cx(
-            'min-h-[110px] max-h-[400px] w-full p-5 pb-16 mb-3 overflow-y-auto resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1D1D1D] transition-none whitespace-pre-wrap break-words'
+            'min-h-[110px] border dark:border-[#323232] max-h-[400px] w-full p-5 pb-16 mb-3 overflow-y-auto resize-none rounded-[20px] !text-sm border bg-background dark:bg-[#1D1D1D] transition-none whitespace-pre-wrap break-words'
           )}
           rows={2}
           autoFocus
@@ -438,6 +442,13 @@ function PureMultimodalInput({
 
         <div className="absolute bottom-0 p-[19px] py-6 w-fit flex flex-row justify-start gap-2">
           <AttachmentsButton fileInputRef={fileInputRef} status={status} />
+          {isSearchSupported && (
+            <SearchButton 
+              isActive={isSearchActive} 
+              onClick={() => setIsSearchActive(!isSearchActive)} 
+              status={status}
+            />
+          )}
           <ClientOnly>
             <div className="relative" ref={styleDropdownRef}>
               <Button
@@ -445,7 +456,7 @@ function PureMultimodalInput({
                 size="sm"
                 type="button"
                 className={cx(
-                  "rounded-full px-2.5 py-1.5 h-fit border dark:border-[#232323] transition-colors duration-200 flex items-center gap-1.5",
+                  "rounded-full px-2.5 py-1.5 h-fit border dark:border-[#323232] transition-colors duration-200 flex items-center gap-1.5",
                   selectedStyle === 'Normal' 
                     ? 'bg-transparent hover:bg-transparent/5 dark:hover:bg-[#232323]'
                     : [
@@ -555,10 +566,43 @@ export const MultimodalInput = memo(
     if (prevProps.input !== nextProps.input) return false;
     if (prevProps.status !== nextProps.status) return false;
     if (!equal(prevProps.attachments, nextProps.attachments)) return false;
+    if (prevProps.selectedModelId !== nextProps.selectedModelId) return false;
 
     return true;
   },
 );
+
+function PureSearchButton({
+  isActive,
+  onClick,
+  status,
+}: {
+  isActive: boolean;
+  onClick: () => void;
+  status: UseChatHelpers['status'];
+}) {
+  return (
+    <Button
+      data-testid="search-button"
+      className={cx(
+        "rounded-full px-3 py-1.5 h-fit border dark:border-[#323232] transition-colors duration-200 flex items-center gap-2",
+        isActive ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300" :
+        "bg-transparent hover:bg-transparent/5 dark:hover:bg-[#232323]"
+      )}
+      onClick={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
+      disabled={status !== 'ready'}
+      variant="ghost"
+    >
+      <GlobeIcon size={16} />
+      <span className="text-sm font-normal">Search</span>
+    </Button>
+  );
+}
+
+const SearchButton = memo(PureSearchButton);
 
 function PureAttachmentsButton({
   fileInputRef,
@@ -571,7 +615,7 @@ function PureAttachmentsButton({
     <Button
       data-testid="attachments-button"
       className={cx(
-        "rounded-full p-[8px] h-fit border dark:border-[#232323] transition-colors duration-200",
+        "rounded-full p-[8px] h-fit border dark:border-[#323232] transition-colors duration-200",
         "bg-transparent hover:bg-transparent/5 dark:hover:bg-[#232323]"
       )}
       onClick={(event) => {

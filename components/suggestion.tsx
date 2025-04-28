@@ -41,7 +41,7 @@ export const Suggestion = ({
       ) : (
         <motion.div
           key={suggestion.id}
-          className="absolute bg-background p-3 flex flex-col gap-3 rounded-2xl border text-sm w-56 shadow-xl z-50 -right-12 md:-right-16 font-sans"
+          className="absolute bg-background p-6 flex flex-col gap-3 rounded-2xl border text-sm w-56 shadow-xl z-50 -right-12 md:-right-16"
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: -20 }}
@@ -55,7 +55,7 @@ export const Suggestion = ({
             </div>
             <button
               type="button"
-              className="text-xs text-gray-500 cursor-pointer"
+              className="text-xs text-[#9C9C9C] cursor-pointer"
               onClick={() => {
                 setIsExpanded(false);
               }}
@@ -65,8 +65,9 @@ export const Suggestion = ({
           </div>
           <div>{suggestion.description}</div>
           <Button
-            variant="outline"
-            className="w-fit py-1.5 px-3 rounded-full"
+            variant="default"
+            size="sm"
+            className="w-fit dark:bg-background text-white border dark:hover:bg-[#232323]"
             onClick={onApply}
           >
             Apply

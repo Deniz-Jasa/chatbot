@@ -29,6 +29,6 @@ export const myProvider = customProvider({
     // 'gpt-o4-mini': openai('o4-mini'),
     // 'gpt-4.1': openai('gpt-4.1'),
     // 'gpt-o3': openai('o3'),
-    'deepseek-r1': openrouter.chat('deepseek/deepseek-r1:free')
+    'deepseek-r1': openrouter.chat('tngtech/deepseek-r1t-chimera:free')
   },
 });

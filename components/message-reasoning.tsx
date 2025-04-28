@@ -59,7 +59,7 @@ export function MessageReasoning({
           <Button
             size="sm"
             variant="outline"
-            className="h-9 gap-1.5 text-xs pr-4"
+            className="h-9 gap-1.5 text-xs pr-4 border border-[#323232]"
             disabled
           >
             <span>Reasoning...</span>
@@ -68,7 +68,7 @@ export function MessageReasoning({
           <Button
             size="sm"
             variant="outline"
-            className="h-9 gap-1.5 text-xs pr-4"
+            className="h-9 gap-1.5 text-xs pr-4 border border-[#323232]"
             onClick={() => setIsExpanded(!isExpanded)}
             data-testid="message-reasoning-toggle"
           >
@@ -101,7 +101,7 @@ export function MessageReasoning({
             exit="collapsed"
             variants={variants}
             style={{ overflow: 'hidden' }}
-            className="pl-4 text-[11pt] text-zinc-600 dark:text-[#9C9C9C] border-l flex flex-col gap-4 my-2"
+            className="pl-4 text-[10.5pt] text-zinc-600 dark:text-[#9C9C9C] border-l border-[#323232] flex flex-col gap-4 my-2"
           >
             <Markdown>{reasoning}</Markdown>
           </motion.div>

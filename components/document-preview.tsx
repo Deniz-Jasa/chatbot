@@ -7,9 +7,10 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import { ArtifactKind, UIArtifact } from './artifact';
-import { FileIcon, FullscreenIcon, ImageIcon, LoaderIcon, CopyIcon } from './icons';
+import { FileIcon, FullscreenIcon, ImageIcon, LoaderIcon, CopyIcon, CheckCircleFillIcon } from './icons';
 import { cn, fetcher } from '@/lib/utils';
 import { Document } from '@/lib/db/schema';
 import { InlineDocumentSkeleton } from './document-skeleton';
@@ -119,7 +120,7 @@ export function DocumentPreview({
 
 const LoadingSkeleton = ({ artifactKind }: { artifactKind: ArtifactKind }) => (
   <div className="w-full">
-    <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-center justify-between dark:bg-muted h-[57px] dark:border-zinc-700 border-b-0">
+    <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-center justify-between dark:bg-[#1D1D1D] h-[57px] dark:border-zinc-700 border-b-0">
       <div className="flex flex-row items-center gap-3">
         <div className="text-muted-foreground">
           <div className="animate-pulse rounded-md size-4 bg-muted-foreground/20" />
@@ -158,6 +159,7 @@ const PureHitboxLayer = ({
     updaterFn: UIArtifact | ((currentArtifact: UIArtifact) => UIArtifact),
   ) => void;
 }) => {
+  const [showCheckmark, setShowCheckmark] = useState(false);
   const { data: documents } = useSWR<Array<Document>>(
     result ? `/api/document?id=${result.id}` : null,
     fetcher
@@ -166,11 +168,10 @@ const PureHitboxLayer = ({
 
   const handleFullscreenClick = useCallback(
     (event: MouseEvent<HTMLElement>) => {
-      event.stopPropagation(); // Prevent the click from bubbling up
+      event.stopPropagation();
       
       const boundingBox = hitboxRef.current?.getBoundingClientRect();
       
-      // Ensure we have valid coordinates
       const boundingBoxData = {
         left: boundingBox?.left || 0,
         top: boundingBox?.top || 0,
@@ -199,7 +200,8 @@ const PureHitboxLayer = ({
       event.stopPropagation();
       if (document?.content) {
         navigator.clipboard.writeText(document.content);
-        toast.success('Copied to clipboard!');
+        setShowCheckmark(true);
+        setTimeout(() => setShowCheckmark(false), 5000);
       }
     },
     [document],
@@ -247,7 +249,7 @@ const PureHitboxLayer = ({
             className="p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100 pointer-events-auto cursor-pointer"
             onClick={handleCopyClick}
           >
-            <CopyIcon />
+            {showCheckmark ? <CheckCircleFillIcon /> : <CopyIcon />}
           </div>
           <div 
             className="p-2 hover:dark:bg-zinc-700 rounded-md hover:bg-zinc-100 pointer-events-auto cursor-pointer" 
@@ -275,7 +277,7 @@ const PureDocumentHeader = ({
   kind: ArtifactKind;
   isStreaming: boolean;
 }) => (
-  <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-start sm:items-center justify-between dark:bg-muted border-b-0 dark:border-zinc-700">
+  <div className="p-4 border rounded-t-2xl flex flex-row gap-2 items-start sm:items-center justify-between dark:bg-[#1D1D1D] border-b-0">
     <div className="flex flex-row items-start sm:items-center gap-3">
       <div className="text-muted-foreground">
         {isStreaming ? (
@@ -288,7 +290,7 @@ const PureDocumentHeader = ({
           <FileIcon />
         )}
       </div>
-      <div className="-translate-y-1 sm:translate-y-0 font-medium">{title}</div>
+      <div className="-translate-y-1 sm:translate-y-0 mt-[3px] text-[11pt]">{title}</div>
     </div>
     <div className="w-8" />
   </div>
@@ -305,10 +307,10 @@ const DocumentContent = ({ document }: { document: Document }) => {
   const { artifact } = useArtifact();
 
   const containerClassName = cn(
-    'h-[257px] overflow-y-auto border rounded-b-2xl dark:bg-muted border-t-0 dark:border-zinc-700',
+    'h-[257px] overflow-y-auto border rounded-b-2xl dark:bg-[#1D1D1D] border-t-0',
     {
       'p-4 sm:px-14 sm:py-16': document.kind === 'text',
-      'p-0': document.kind === 'code',
+      'px-8': document.kind === 'code',
     },
   );
 

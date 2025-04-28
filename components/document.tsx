@@ -68,7 +68,7 @@ function PureDocumentToolResult({
         });
       }}
     >
-      <div className="text-muted-foreground mt-1">
+      <div className="text-muted-foreground text-[10.5pt] mt-[4.8px] ml-1">
         {type === 'create' ? (
           <FileIcon />
         ) : type === 'update' ? (
@@ -77,7 +77,7 @@ function PureDocumentToolResult({
           <MessageIcon />
         ) : null}
       </div>
-      <div className="text-left">
+      <div className="text-left text-[10.5pt] mt-[2.5px] mr-1">
         {`${getActionText(type, 'past')} "${result.title}"`}
       </div>
     </button>
@@ -138,7 +138,7 @@ function PureDocumentToolCall({
           ) : null}
         </div>
 
-        <div className="text-left">
+        <div className="text-left text-[10.5pt] mt-[2.5px] mr-1">
           {`${getActionText(type, 'present')} ${args.title ? `"${args.title}"` : ''}`}
         </div>
       </div>

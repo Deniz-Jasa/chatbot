@@ -88,14 +88,14 @@ export function Console({ consoleOutputs, setConsoleOutputs }: ConsoleProps) {
 
       <div
         className={cn(
-          'fixed flex flex-col bottom-0 dark:bg-[#191919] bg-zinc-50 w-full border-t z-40 overflow-y-scroll overflow-x-hidden dark:border-zinc-700 border-zinc-200',
+          'fixed flex flex-col bottom-0 dark:bg-[#1D1D1D] bg-zinc-50 w-full border-t z-40 overflow-y-scroll overflow-x-hidden dark:border-zinc-700 border-zinc-200',
           {
             'select-none': isResizing,
           },
         )}
         style={{ height }}
       >
-        <div className="flex flex-row justify-between items-center w-full h-fit border-b dark:border-zinc-700 border-zinc-200 px-2 py-1 sticky top-0 z-50 bg-muted">
+        <div className="flex flex-row justify-between items-center w-full h-fit border-b dark:border-zinc-700 border-zinc-200 px-2 py-1 sticky top-0 z-50 bg-[#1D1D1D]">
           <div className="text-sm pl-2 dark:text-zinc-50 text-zinc-800 flex flex-row gap-3 items-center">
             <div className="text-muted-foreground">
               <TerminalWindowIcon />
@@ -104,7 +104,7 @@ export function Console({ consoleOutputs, setConsoleOutputs }: ConsoleProps) {
           </div>
           <Button
             variant="ghost"
-            className="size-fit p-1 hover:dark:bg-[#191919] hover:bg-zinc-200"
+            className="size-fit p-1 hover:dark:bg-[#1D1D1D] hover:bg-zinc-200"
             size="icon"
             onClick={() => setConsoleOutputs([])}
           >
@@ -116,7 +116,7 @@ export function Console({ consoleOutputs, setConsoleOutputs }: ConsoleProps) {
           {consoleOutputs.map((consoleOutput, index) => (
             <div
               key={consoleOutput.id}
-              className="p-12 flex flex-row text-sm border-b dark:bg-[#191919] bg-zinc-50 font-mono"
+              className="p-12 flex flex-row text-sm border-b dark:bg-[#1D1D1D] bg-zinc-50 font-mono"
             >
               <div
                 className={cn('w-12 shrink-0', {

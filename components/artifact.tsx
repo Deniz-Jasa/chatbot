@@ -278,7 +278,7 @@ function PureArtifact({
 
           {!isMobile && (
             <motion.div
-              className="relative w-[50vw] bg-muted dark:bg-background h-dvh shrink-0"
+              className="relative w-[50vw] bg-background h-dvh shrink-0"
               initial={{ opacity: 0, x: 10, scale: 1 }}
               animate={{
                 opacity: 1,
@@ -321,7 +321,7 @@ function PureArtifact({
                   artifactStatus={artifact.status}
                 />
 
-                <form className="flex flex-row gap-4 relative items-end md:w-[80%] w-full">
+                <form className="flex flex-row gap-4 relative items-end md:w-[90%] w-full">
                   <MultimodalInput
                     chatId={chatId}
                     input={input}
@@ -333,7 +333,6 @@ function PureArtifact({
                     setAttachments={setAttachments}
                     messages={messages}
                     append={append}
-                    className="bg-background dark:bg-muted"
                     setMessages={setMessages}
                   />
                 </form>
@@ -342,7 +341,7 @@ function PureArtifact({
           )}
 
           <motion.div
-            className="fixed dark:bg-muted bg-background h-dvh flex flex-col overflow-y-scroll md:border-l dark:border-zinc-700 border-zinc-200"
+            className="fixed dark:bg-[#1D1D1D] bg-background h-dvh flex flex-col overflow-y-scroll md:border-l dark:border-zinc-700 border-zinc-200"
             initial={
               isMobile
                 ? {
@@ -408,7 +407,7 @@ function PureArtifact({
               },
             }}
           >
-            <div className="p-2 flex flex-row justify-between items-start">
+            <div className="p-4 flex flex-row justify-between items-start">
               <div className="flex flex-row gap-4 items-start">
                 <ArtifactCloseButton />
 
@@ -446,7 +445,7 @@ function PureArtifact({
               />
             </div>
 
-            <div className="dark:bg-muted bg-background h-full overflow-y-scroll !max-w-full items-center">
+            <div className="dark:bg-[#1D1D1D] bg-background h-full overflow-y-scroll !max-w-full items-center">
               <artifactDefinition.content
                 title={artifact.title}
                 content={

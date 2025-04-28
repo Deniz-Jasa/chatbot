@@ -39,7 +39,11 @@ export const systemPrompt = ({
 }: {
   selectedChatModel: string;
 }) => {
-  if (selectedChatModel === 'claude-3-7-reasoning') {
+  // These models should not create artifacts by default
+  if (selectedChatModel === 'deepseek-r1' || 
+      selectedChatModel === 'gemini-2-5-pro-exp' ||
+      selectedChatModel === 'gemini-2-0-flash' ||
+      selectedChatModel === 'cohere-command-a') {
     return regularPrompt;
   } else {
     return `${regularPrompt}\n\n${artifactsPrompt}`;

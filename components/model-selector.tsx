@@ -42,7 +42,7 @@ export function ModelSelector({
         <Button
           data-testid="model-selector"
           variant="ghost"
-          className="md:px-2 md:h-[34px]"
+          className="md:px-3 md:h-[34px]"
         >
           {selectedChatModel?.name}
           <ChevronDownIcon />

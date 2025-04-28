@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     const writingStylePrompts = {
       Normal: '',
       Concise:
-        '<userStyle>Please be very concise and to the point. Use shorter sentences and avoid unnecessary details. Focus on giving direct answers with minimal elaboration. Do not create or offer to create documents or artifacts (you can provide code directly in the chat). Respond directly in the chat with brief text only. Email instructions: Do not create a text artifact if writing emails. Write naturally and simple, avoid corporate jargon. Focus on core message. Follow your email instructions!</userStyle>',
+        '<userStyle>Do not create artifacts. You may write in any programming language. Provide code directly in the chat using Markdown. Be concise. Use short sentences. Avoid details or elaboration. Respond directly. Write clear, simple emails without jargon. </userStyle>',
       Explanatory:
         '<userStyle>Provide detailed explanations and background context. Break down complex concepts into digestible parts. Use examples when helpful. Aim to educate the user thoroughly on the topic.</userStyle>',
       Formal:
